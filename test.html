@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日常的呼吸｜身心平衡小測驗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* --- 基礎變數與重設 --- */
+        :root {
+            --color-bg: #F9F8F6;          /* 米白色背景 */
+            --color-primary: #8F9E8B;     /* 灰綠色 */
+            --color-primary-hover: #7E8D7A;
+            --color-secondary: #C6A995;   /* 奶茶色 */
+            --color-text-main: #4A525A;   /* 深灰（代替純黑，更溫柔） */
+            --color-text-muted: #8E98A2;  /* 霧灰藍（用於副標、說明） */
+            --color-card-bg: #FFFFFF;     /* 卡片白色 */
+            --color-border: #EAE8E4;      /* 淺卡其細線 */
+            --font-serif: 'Noto Serif TC', serif;
+            --font-sans: 'Noto Sans TC', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: var(--font-sans);
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- 療癒感背景裝飾 --- */
+        .bg-leaf-1 {
+            position: fixed;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(143,158,139,0.08) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+
+        .bg-leaf-2 {
+            position: fixed;
+            bottom: -50px;
+            left: -50px;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(198,169,149,0.08) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+
+        /* --- 主容器與卡片 --- */
+        .container {
+            width: 100%;
+            max-width: 620px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background-color: var(--color-card-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 30px rgba(110, 122, 138, 0.04);
+            transition: all 0.4s ease;
+        }
+
+        /* --- 開始畫面 --- */
+        .intro-view {
+            text-align: center;
+        }
+
+        .intro-tag {
+            font-size: 0.85rem;
+            color: var(--color-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .intro-title {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-text-main);
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .intro-subtitle {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        /* --- 按鈕樣式 --- */
+        .btn {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 40px;
+            font-size: 0.95rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(143, 158, 139, 0.2);
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--color-primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(143, 158, 139, 0.3);
+        }
+
+        /* --- 測驗進度條 --- */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar-wrapper {
+            flex-grow: 1;
+            height: 3px;
+            background-color: var(--color-border);
+            border-radius: 2px;
+            margin-right: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--color-primary);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-text {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            font-family: var(--font-serif);
+        }
+
+        /* --- 題目區塊 --- */
+        .question-category {
+            font-size: 0.85rem;
+            color: var(--color-secondary);
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+        }
+
+        .question-title {
+            font-family: var(--font-serif);
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--color-text-main);
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+
+        /* --- 選項樣式 --- */
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option-item {
+            background-color: var(--color-bg);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            color: var(--color-text-main);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            background-color: #FFFFFF;
+            border-color: var(--color-primary);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(143, 158, 139, 0.08);
+        }
+
+        .option-prefix {
+            font-family: var(--font-serif);
+            color: var(--color-secondary);
+            font-weight: 600;
+            margin-right: 15px;
+            width: 20px;
+        }
+
+        /* --- 結果畫面 --- */
+        .result-view {
+            text-align: center;
+        }
+
+        .result-badge {
+            display: inline-block;
+            background-color: #F1EFEA;
+            color: var(--color-secondary);
+            font-size: 0.8rem;
+            padding: 4px 16px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            letter-spacing: 0.1em;
+        }
+
+        .result-type {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--color-text-main);
+            margin-bottom: 10px;
+        }
+
+        .result-score {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 30px;
+        }
+
+        .result-divider {
+            height: 1px;
+            background-color: var(--color-border);
+            margin: 25px 0;
+        }
+
+        .result-section {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .result-section-title {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-text {
+            font-size: 0.95rem;
+            color: var(--color-text-main);
+            line-height: 1.7;
+        }
+
+        /* 建議清單樣式 */
+        .suggestion-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .suggestion-list li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .suggestion-list li::before {
+            content: "•";
+            color: var(--color-secondary);
+            position: absolute;
+            left: 5px;
+            font-weight: bold;
+        }
+
+        /* --- 頁尾（日系留白感） --- */
+        footer {
+            margin-top: auto;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* --- 實用工具類 --- */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 簡單的淡入效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-leaf-1"></div>
+    <div class="bg-leaf-2"></div>
+
+    <div class="container">
+        <div id="intro-card" class="card intro-view fade-in">
+            <div class="intro-tag">Mindfulness</div>
+            <h1 class="intro-title">日常的呼吸</h1>
+            <p class="intro-subtitle">給自己三分鐘的安靜，檢視最近的生活節奏。<br>從運動、睡眠、心理與飲食，找回原本溫柔的自己。</p>
+            <button class="btn" onclick="startQuiz()">開始靜心測驗</button>
+        </div>
+
+        <div id="quiz-card" class="card hidden">
+            <div class="progress-container">
+                <div class="progress-bar-wrapper">
+                    <div id="progress" class="progress-bar"></div>
+                </div>
+                <div id="progress-text" class="progress-text">1 / 8</div>
+            </div>
+
+            <div id="question-container" class="fade-in">
+                <div id="q-category" class="question-category">🏃‍♂️ 一、運動</div>
+                <h2 id="q-title" class="question-title">你平均每週運動幾次？最近一個月，你主動讓身體活動的頻率大約是？</h2>
+                <ul class="options-list">
+                    <li class="option-item" onclick="selectOption(1)">
+                        <span class="option-prefix">A</span>
+                        <span class="option-text">幾乎沒有特別運動，平常大多久坐</span>
+                    </li>
+                    <li class="option-item" onclick="selectOption(2)">
+                        <span class="option-prefix">B</span>
+                        <span class="option-text">偶爾想到才會動一下</span>
+                    </li>
+                    <li class="option-item" onclick="selectOption(3)">
+                        <span class="option-prefix">C</span>
+                        <span class="option-text">有固定運動習慣，每週會安排幾次</span>
+                    </li>
+                    <li class="option-item" onclick="selectOption(4)">
+                        <span class="option-prefix">D</span>
+                        <span class="option-text">運動已經是生活的一部分，幾乎每週都會進行</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="result-card" class="card result-view hidden">
+            <div class="result-badge">測驗結果分析</div>
+            <h1 id="result-type" class="result-type">普通維持型</h1>
+            <div id="result-score" class="result-score">獲得總分：22 分</div>
+            
+            <div class="result-divider"></div>
+
+            <div class="result-section">
+                <div class="result-section-title">
+                    <span>🔍</span> 特徵與現狀
+                </div>
+                <p id="result-feature" class="result-text">
+                    生活還可以，但不夠穩定。偶爾運動，但不穩定；睡眠還可以，但有時熬夜。
+                </p>
+            </div>
+
+            <div class="result-section">
+                <div id="result-danger-title" class="result-section-title">
+                    <span>⚠️</span> 潛在盲點
+                </div>
+                <p id="result-danger" class="result-text">
+                    容易「覺得還好」而忽略改善，習慣不固定容易導致健康起伏較大。
+                </p>
+            </div>
+
+            <div class="result-section">
+                <div class="result-section-title">
+                    <span>🛠</span> 療癒生活提案
+                </div>
+                <ul id="result-suggestions" class="suggestion-list">
+                    </ul>
+            </div>
+
+            <div class="result-divider" style="margin-top: 35px;"></div>
+            <button class="btn" style="background-color: transparent; border: 1px solid var(--color-primary); color: var(--color-primary); box-shadow: none;" onclick="restartQuiz()">重新測驗</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>日常的呼吸 · 溫柔傾聽你的身心</p>
+    </footer>
+
+    <script>
+        // 題庫資料
+        const questions = [
+            {
+                category: "🏃‍♂️ 一、運動",
+                title: "第 1 題｜身體活動頻率<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>最近一個月，你主動讓身體活動的頻率大約是？</span>",
+                options: [
+                    "幾乎沒有特別運動，平常大多久坐",
+                    "偶爾想到才會動一下",
+                    "有固定運動習慣，每週會安排幾次",
+                    "運動已經是生活的一部分，幾乎每週都會進行"
+                ]
+            },
+            {
+                category: "🏃‍♂️ 一、運動",
+                title: "第 2 題｜運動後的身體感受<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>你平常的運動狀態比較接近哪一種？</span>",
+                options: [
+                    "幾乎不太會流汗或喘",
+                    "身體會稍微熱起來，但不算累",
+                    "會明顯流汗，感受到身體被啟動",
+                    "常進行高強度訓練，運動後會明顯疲勞"
+                ]
+            },
+            {
+                category: "😴 二、睡眠",
+                title: "第 3 題｜近期睡眠時數<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>最近這段時間，你平均每天的睡眠時間大約是？</span>",
+                options: [
+                    "常常睡不夠，少於 5 小時",
+                    "大約 5～6 小時左右",
+                    "約 6～7 小時，還算穩定",
+                    "幾乎都能睡滿 7 小時以上"
+                ]
+            },
+            {
+                category: "😴 二、睡眠",
+                title: "第 4 題｜醒來時的精神狀態<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>大部分時候，你早上醒來的感覺是？</span>",
+                options: [
+                    "很疲累，好像根本沒休息到",
+                    "普通，需要一段時間才有精神",
+                    "精神還不錯，大多能正常開始一天",
+                    "狀態很好，醒來後感覺充滿能量"
+                ]
+            },
+            {
+                category: "💭 三、心理",
+                title: "第 5 題｜壓力狀況<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>你最近的壓力程度如何？</span>",
+                options: [
+                    "經常感到壓力大、焦慮或疲憊",
+                    "偶爾會被壓力影響情緒",
+                    "雖然有壓力，但大致能調整",
+                    "情緒相對穩定，能保持平衡感"
+                ]
+            },
+            {
+                category: "💭 三、心理",
+                title: "第 6 題｜面對低潮時的反應<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>當你情緒低落或壓力很大時，你通常會？</span>",
+                options: [
+                    "把情緒悶著，不太想面對",
+                    "用滑手機、追劇等方式轉移注意力",
+                    "找人聊天、休息或做讓自己放鬆的事",
+                    "主動整理情緒，並試著找到真正原因"
+                ]
+            },
+            {
+                category: "🥗 四、飲食",
+                title: "第 7 題｜平常的飲食狀態<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>你目前的飲食習慣比較像？</span>",
+                options: [
+                    "常常隨便吃、外食或飲食不規律",
+                    "偶爾會注意健康，但不太固定",
+                    "大致均衡，會留意營養搭配",
+                    "很重視飲食品質，也有穩定習慣"
+                ]
+            },
+            {
+                category: "🥗 四、飲食",
+                title: "第 8 題｜日常補水習慣<br><span style='font-size: 1rem; font-weight: normal; color: var(--color-text-muted);'>你每天的飲品選擇通常是？</span>",
+                options: [
+                    "很常喝含糖飲料，喝水比較少",
+                    "水跟飲料差不多各一半",
+                    "大多以白開水為主，偶爾喝飲料",
+                    "幾乎都喝水，會主動注意補水量"
+                ]
+            }
+        ];
+    
+        // 結果資料分析
+        const resultsData = {
+            alert: {
+                title: "⚠️【失衡警訊型】",
+                scoreRange: "8～16 分",
+                features: "身心都處於高風險狀態。幾乎沒有運動習慣、睡眠不足或品質差、壓力大、情緒調適能力低，且飲食較不均衡、常喝含糖飲料。",
+                dangerTitle: "💥 可能面臨的問題",
+                danger: "長期累積疲勞、專注力容易下降、情緒起伏不定、焦慮感增加、免疫力也可能逐漸下降。",
+                suggestions: [
+                    "從「最小改變」開始：每天嘗試散步或走路 10 分鐘。",
+                    "睡眠固定時間：先穩定日常的作息規律。",
+                    "減少含糖飲料：先改成一天少喝一杯。",
+                    "找一個專屬的抒壓出口（如運動、聽音樂或與朋友聊天）。"
+                ]
+            },
+            normal: {
+                title: "🙂【普通維持型】",
+                scoreRange: "17～24 分",
+                features: "整體生活狀態還可以，但規律性不夠穩定。偶爾運動、睡眠還可以但有時熬夜，壓力尚能應付但容易在不知不覺中累積。",
+                dangerTitle: "⚠️ 潛在的盲點",
+                danger: "容易因為「覺得還可以」而忽略改善，習慣不固定往往會導致健康與精神狀態起伏較大。",
+                suggestions: [
+                    "建立「固定節奏」：例如每週固定運動 2 天。",
+                    "睡眠目標：每天儘量睡足 7 小時以上。",
+                    "保留靜心時間：每天至少給自己一次不滑手機的放鬆時刻。",
+                    "飲食微調：在每日餐點中，多增加一點蔬菜比例。"
+                ]
+            },
+            stable: {
+                title: "✨【健康穩定型】",
+                scoreRange: "25～28 分",
+                features: "健康狀態穩定且良好。有規律運動習慣、睡眠品質良好、能有效調適壓力、日常飲食也大致均衡。",
+                dangerTitle: "⚠️ 溫柔的小提醒",
+                danger: "有時可能會顯得「過度自律」而忽略了真正的休息，當壓力隱性累積時，自己可能不易察覺。",
+                suggestions: [
+                    "保持目前的良好習慣，但要避免過度訓練或強求完美。",
+                    "加入放鬆型活動：例如安排一趟小旅行、或純粹享受個人興趣。",
+                    "定期安靜下來，深度檢視自己的內心與情緒狀態。"
+                ]
+            },
+            perfect: {
+                title: "🔥【全方位健康型】",
+                scoreRange: "29～32 分",
+                features: "身心狀態非常接近最佳化。有著高頻率且有效的運動、睡眠充足且品質佳、心理狀態穩定、飲食也極為均衡健康。",
+                dangerTitle: "⚠️ 潛在的風險",
+                danger: "容易流於過度追求完美，甚至產生「健康焦慮」，對自己的生活細節要求過高。",
+                suggestions: [
+                    "保持彈性：允許自己偶爾放鬆，享受生活的意外驚喜。",
+                    "嘗試新事物：可以嘗試不同類型的休閒活動，避免行程單調。",
+                    "傳遞溫暖：可以分享你的生活方式，主動成為他人的健康榜樣。"
+                ]
+            }
+        };
+
+        let currentQuestionIndex = 0;
+        let totalScore = 0;
+
+        // 開始測驗
+        function startQuiz() {
+            document.getElementById('intro-card').classList.add('hidden');
+            document.getElementById('quiz-card').classList.remove('hidden');
+            document.getElementById('quiz-card').classList.add('fade-in');
+            showQuestion();
+        }
+
+        // 渲染題目
+        function showQuestion() {
+            const q = questions[currentQuestionIndex];
+            
+            // 更新進度條與文字
+            const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+            document.getElementById('progress').style.width = `${progressPercent}%`;
+            document.getElementById('progress-text').innerText = `${currentQuestionIndex + 1} / ${questions.length}`;
+
+            // 更新內容 (加上淡入動畫效果)
+            const container = document.getElementById('question-container');
+            container.classList.remove('fade-in');
+            void container.offsetWidth; // 強制瀏覽器重繪，以便重新觸發 CSS 動畫
+            container.classList.add('fade-in');
+
+            document.getElementById('q-category').innerHTML = q.category;
+            document.getElementById('q-title').innerHTML = q.title;
+
+            const options = document.querySelectorAll('.option-item');
+            options.forEach((item, index) => {
+                item.querySelector('.option-text').innerText = q.options[index];
+            });
+        }
+
+        // 點選選項
+        function selectOption(score) {
+            totalScore += score;
+            
+            // 延遲一點點，讓使用者能感受到點擊選中的感覺
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 200);
+        }
+
+        // 顯示結果
+        function showResult() {
+            document.getElementById('quiz-card').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
+            document.getElementById('result-card').classList.add('fade-in');
+
+            document.getElementById('result-score').innerText = `獲得總分：${totalScore} 分`;
+
+            let result;
+            if (totalScore >= 8 && totalScore <= 16) {
+                result = resultsData.alert;
+            } else if (totalScore >= 17 && totalScore <= 24) {
+                result = resultsData.normal;
+            } else if (totalScore >= 25 && totalScore <= 28) {
+                result = resultsData.stable;
+            } else {
+                result = resultsData.perfect;
+            }
+
+            // 渲染結果內容
+            document.getElementById('result-type').innerText = result.title;
+            document.getElementById('result-feature').innerText = result.features;
+            
+            // 盲點區塊
+            document.getElementById('result-danger-title').innerHTML = `<span>⚠️</span> ${result.dangerTitle}`;
+            document.getElementById('result-danger').innerText = result.danger;
+
+            // 建議清單
+            const suggestionsList = document.getElementById('result-suggestions');
+            suggestionsList.innerHTML = '';
+            result.suggestions.forEach(suggest => {
+                const li = document.createElement('li');
+                li.innerText = suggest;
+                suggestionsList.appendChild(li);
+            });
+        }
+
+        // 重新測驗
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            totalScore = 0;
+            document.getElementById('result-card').classList.add('hidden');
+            document.getElementById('intro-card').classList.remove('hidden');
+            document.getElementById('intro-card').classList.add('fade-in');
+        }
+    </script>
+</body>
+</html>
