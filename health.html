@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health+ | 健康加分站</title>
+    <!-- 字體與圖標 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-main: #F7F5F2;
+            --bg-card: #FFFFFF;
+            --green-main: #8F9E8B;
+            --green-dark: #5F6B5A; 
+            --milk-tea: #C6A995;
+            --mist-blue: #8E98A2;
+            --khaki-light: #EAE5DD;
+            --text-main: #4A525A;
+            --text-light: #7D858D;
+            --shadow: rgba(120, 120, 120, 0.08);
+            --font-serif: 'Noto Serif TC', serif;
+            --font-sans: 'Noto Sans TC', sans-serif;
+
+            /* 情緒顏色 */
+            --mood-happy: #E8C29E;
+            --mood-calm: #8F9E8B;
+            --mood-anxious: #788896;
+            --mood-tired: #BDBDBD;
+            --mood-sad: #95869E;
+            --mood-angry: #7D5A44;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.8;
+            letter-spacing: 0.05em;
+            min-height: 100vh;
+        }
+
+        /* --- Layout --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--khaki-light);
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--green-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--green-dark); 
+            font-weight: 500;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* --- Components --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px var(--shadow);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn {
+            background-color: var(--green-main);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: var(--green-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(95, 107, 90, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--green-main);
+            color: var(--green-main);
+        }
+
+        .title-serif {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- Home --- */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-main);
+        }
+
+        .hero p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--khaki-light);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: var(--green-main);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            color: var(--green-main);
+            margin-bottom: 1rem;
+        }
+
+        /* --- Calendar Logic --- */
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fdfdfd;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border: 1px solid #eee;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .calendar-day.is-today {
+            border: 2px solid var(--green-dark);
+            background-color: var(--khaki-light);
+            font-weight: 700;
+        }
+
+        .marker-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- Mood Grid --- */
+        .mood-pallette-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 1.5rem 0;
+        }
+
+        .mood-option-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.2s, border-color 0.2s;
+            margin: 0 auto 8px;
+        }
+
+        .mood-option-wrapper {
+            text-align: center;
+            padding: 12px 5px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mood-option-wrapper.selected { background-color: #f0f0f0; }
+        .mood-option-wrapper.selected .mood-option-circle { border-color: var(--green-dark); transform: scale(1.1); }
+
+        .color-orange { background-color: var(--mood-happy); } 
+        .color-green { background-color: var(--mood-calm); }  
+        .color-blue { background-color: var(--mood-anxious); }   
+        .color-gray { background-color: var(--mood-tired); }   
+        .color-purple { background-color: var(--mood-sad); } 
+        .color-brown { background-color: var(--mood-angry); }  
+
+        /* --- Utils --- */
+        .icon-btn {
+            background: none; border: none; cursor: pointer; color: var(--text-light);
+            display: flex; align-items: center; justify-content: center;
+            padding: 5px; border-radius: 50%; transition: background 0.3s;
+        }
+        .icon-btn:hover { background: var(--khaki-light); color: var(--green-dark); }
+
+        footer { text-align: center; padding: 3rem; color: var(--text-light); font-size: 0.8rem; }
+
+        /* Quiz Specific UI */
+        .quiz-option {
+            background-color: var(--bg-main);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .quiz-option:hover { transform: translateX(5px); background: #fff; border: 1px solid var(--green-main); }
+        .quiz-option .prefix { font-family: var(--font-serif); color: var(--milk-tea); font-weight: 600; margin-right: 15px; width: 20px; }
+
+        /* Message Box */
+        #custom-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-main);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            z-index: 1000;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 0.6s ease forwards; }
+    </style>
+</head>
+<body>
+
+    <div id="custom-message" class="hidden">輸入錯誤，請檢查數值</div>
+
+    <header>
+        <div class="logo" onclick="switchView('home')">
+            <i data-lucide="leaf"></i> Health+
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="switchView('home')" id="nav-home" class="active">首頁</a></li>
+                <li><a onclick="switchView('calc')" id="nav-calc">計算器</a></li>
+                <li><a onclick="switchView('quiz')" id="nav-quiz">健康測驗</a></li>
+                <li><a onclick="switchView('mood')" id="nav-mood">情緒牆</a></li>
+                <li><a>關於我們</a></li>
+                <li><a>登入</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="view-container">
+        <!-- Home -->
+        <section id="view-home" class="view fade-in">
+            <div class="hero">
+                <h1>健康加分站</h1>
+                <p>「溫柔照顧你的身體，也照顧你的情緒。」</p>
+                <button class="btn" onclick="switchView('quiz')">開始健康旅程</button>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-item" onclick="switchView('calc')">
+                    <i data-lucide="calculator" class="feature-icon"></i>
+                    <h3>BMI & TDEE</h3>
+                    <p>了解你的身體數據</p>
+                </div>
+                <div class="feature-item" onclick="switchView('quiz')">
+                    <i data-lucide="clipboard-check" class="feature-icon"></i>
+                    <h3>健康小測驗</h3>
+                    <p>檢測身心平衡度</p>
+                </div>
+                <div class="feature-item" onclick="switchView('mood')">
+                    <i data-lucide="palette" class="feature-icon"></i>
+                    <h3>情緒顏色牆</h3>
+                    <p>用顏色紀錄每日心情</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BMI/TDEE Calculator -->
+        <section id="view-calc" class="view hidden fade-in">
+            <div class="card">
+                <h2 class="title-serif">BMI & TDEE 計算器</h2>
+                <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
+                    <button type="button" class="btn" id="btn-bmi-mode" onclick="setCalcMode('BMI')">BMI 計算</button>
+                    <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE 計算器</button>
+                </div>
+                <form id="calc-inputs" onsubmit="event.preventDefault(); calculate();">
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-light);">身高 (cm)</label>
+                        <input type="number" id="calc-height" placeholder="例如：170" style="width: 100%; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid var(--khaki-light); background-color: var(--bg-main); outline: none;">
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-light);">體重 (kg)</label>
+                        <input type="number" id="calc-weight" placeholder="例如：60" style="width: 100%; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid var(--khaki-light); background-color: var(--bg-main); outline: none;">
+                    </div>
+                    <div id="tdee-extra-inputs" class="hidden">
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-light);">年齡</label>
+                            <input type="number" id="calc-age" placeholder="例如：25" style="width: 100%; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid var(--khaki-light); background-color: var(--bg-main); outline: none;">
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-light);">性別</label>
+                            <select id="calc-gender" style="width: 100%; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid var(--khaki-light); background-color: var(--bg-main); outline: none;">
+                                <option value="male">男性</option>
+                                <option value="female">女性</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-light);">活動量</label>
+                            <select id="calc-activity" style="width: 100%; padding: 0.8rem 1rem; border-radius: 12px; border: 1px solid var(--khaki-light); background-color: var(--bg-main); outline: none;">
+                                <option value="1.2">久坐 (幾乎不運動)</option>
+                                <option value="1.375">輕量活動 (每週運動 1-3 天)</option>
+                                <option value="1.55">中度活動 (每週運動 3-5 天)</option>
+                                <option value="1.725">高度活動 (每週運動 6-7 天)</option>
+                                <option value="1.9">極高活動 (重體力工作或高強度運動)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">立即計算</button>
+                </form>
+                <div id="calc-result" class="hidden" style="margin-top: 2rem; background: var(--bg-main); padding: 1.8rem; border-radius: 20px;">
+                    <h3 id="res-title" class="title-serif">計算結果</h3>
+                    <p id="res-val" style="font-size: 2.2rem; font-weight: 700; color: var(--green-main); margin: 10px 0;"></p>
+                    <p id="res-status" style="font-weight: 600; margin-bottom: 5px;"></p>
+                    <p id="res-ideal" style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 15px;"></p>
+                    <div id="res-advice" style="font-size: 0.95rem; color: var(--text-main); white-space: pre-line; line-height: 1.7;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz -->
+        <section id="view-quiz" class="view hidden fade-in">
+            <div id="quiz-intro" class="card" style="text-align: center;">
+                <div style="color: var(--milk-tea); font-weight: 500; font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px;">MINDFULNESS</div>
+                <h2 class="title-serif" style="font-size: 2rem;">日常的呼吸</h2>
+                <p style="color: var(--text-light); margin-bottom: 2rem;">給自己三分鐘的安靜，檢視最近的生活節奏。<br>從運動、睡眠、心理與飲食，找回原本溫柔的自己。</p>
+                <button class="btn" onclick="startQuiz()">開始靜心測驗</button>
+            </div>
+
+            <div id="quiz-content" class="card hidden">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-light);">
+                    <span id="quiz-cat-name">一、運動</span>
+                    <span id="quiz-progress-text">1 / 8</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: var(--khaki-light); border-radius: 10px; margin: 1.5rem 0; overflow: hidden;">
+                    <div id="quiz-progress-fill" style="height: 100%; background: var(--green-main); width: 0%; transition: width 0.4s;"></div>
+                </div>
+                <h3 id="quiz-question" class="title-serif" style="margin: 1.5rem 0; font-size: 1.3rem;"></h3>
+                <div id="quiz-options"></div>
+            </div>
+
+            <div id="quiz-result" class="card hidden" style="text-align: center;">
+                <div style="background: #F1EFEA; color: var(--milk-tea); font-size: 0.8rem; padding: 4px 16px; border-radius: 20px; display: inline-block; margin-bottom: 1rem;">測驗結果分析</div>
+                <h2 id="qres-type" class="title-serif" style="font-size: 1.8rem;">普通維持型</h2>
+                <p id="qres-score" style="color: var(--text-light); margin-bottom: 2rem;"></p>
+                
+                <div style="border-top: 1px solid var(--khaki-light); margin-bottom: 2rem;"></div>
+                
+                <div style="text-align: left;">
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: var(--green-main); margin-bottom: 8px;">🔍 特徵與現狀</h4>
+                        <p id="qres-feature" style="font-size: 0.95rem; color: var(--text-main);"></p>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 id="qres-danger-title" style="color: var(--milk-tea); margin-bottom: 8px;">⚠️ 潛在盲點</h4>
+                        <p id="qres-danger" style="font-size: 0.95rem; color: var(--text-main);"></p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--green-main); margin-bottom: 12px;">🛠 療癒生活提案</h4>
+                        <ul id="qres-suggestions" style="font-size: 0.95rem; padding-left: 1.2rem; color: var(--text-main); line-height: 1.8;"></ul>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 3rem; display: flex; gap: 10px; justify-content: center;">
+                    <button class="btn btn-outline" onclick="switchView('home')">返回首頁</button>
+                    <button class="btn" onclick="startQuiz()">重新測驗</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mood Wall -->
+        <section id="view-mood" class="view hidden fade-in">
+            <div class="card">
+                <h2 class="title-serif">情緒顏色牆</h2>
+                <div class="calendar-nav">
+                    <button class="icon-btn" onclick="changeMonth(-1)"><i data-lucide="chevron-left"></i></button>
+                    <h3 id="calendar-mood-title">2024 年 5 月</h3>
+                    <button class="icon-btn" onclick="changeMonth(1)"><i data-lucide="chevron-right"></i></button>
+                </div>
+                <div id="mood-calendar-view">
+                    <div class="calendar-grid" id="calendar-mood-grid"></div>
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-outline" onclick="switchMoodView('stats')">查看月度統計</button>
+                    </div>
+                </div>
+                <div id="mood-stats-view" class="hidden">
+                    <div style="max-width: 320px; margin: 0 auto 2rem;"><canvas id="moodChart"></canvas></div>
+                    <div class="result-box" style="background: var(--bg-main); padding: 2rem; border-radius: 24px;">
+                        <h4 style="color: var(--green-main); margin-bottom: 15px; font-size: 1.2rem; font-family: var(--font-serif);">本月綜合療癒建議</h4>
+                        <div id="ai-mood-text" style="font-size: 0.95rem; text-align: left; line-height: 1.9; color: var(--text-main);"></div>
+                    </div>
+                    <button class="btn btn-outline" style="width: 100%; margin-top: 1.5rem;" onclick="switchMoodView('calendar')">返回月曆</button>
+                </div>
+            </div>
+
+            <!-- Mood Picker -->
+            <div id="mood-picker" class="card hidden fade-in">
+                <h3 class="title-serif" id="mood-picker-date">選擇情緒</h3>
+                <div class="mood-pallette-grid">
+                    <div class="mood-option-wrapper" onclick="selectMood('orange')" data-mood="orange">
+                        <div class="mood-option-circle color-orange"></div>
+                        <span>開心</span>
+                    </div>
+                    <div class="mood-option-wrapper" onclick="selectMood('green')" data-mood="green">
+                        <div class="mood-option-circle color-green"></div>
+                        <span>平靜</span>
+                    </div>
+                    <div class="mood-option-wrapper" onclick="selectMood('blue')" data-mood="blue">
+                        <div class="mood-option-circle color-blue"></div>
+                        <span>焦慮</span>
+                    </div>
+                    <div class="mood-option-wrapper" onclick="selectMood('gray')" data-mood="gray">
+                        <div class="mood-option-circle color-gray"></div>
+                        <span>疲憊</span>
+                    </div>
+                    <div class="mood-option-wrapper" onclick="selectMood('purple')" data-mood="purple">
+                        <div class="mood-option-circle color-purple"></div>
+                        <span>難過</span>
+                    </div>
+                    <div class="mood-option-wrapper" onclick="selectMood('brown')" data-mood="brown">
+                        <div class="mood-option-circle color-brown"></div>
+                        <span>生氣</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                    <button class="btn btn-outline" style="flex: 1" onclick="closeMoodPicker()">取消</button>
+                    <button class="btn" style="flex: 1" onclick="saveMood()">確認儲存</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Health+ 健康加分站 · 安靜、柔和、無壓力的陪伴</p>
+    </footer>
+
+    <script>
+        // --- Global State ---
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let moodData = JSON.parse(localStorage.getItem('health_plus_moods_v8')) || {};
+        let selectedMoodDate, selectedMoodColor, myChart;
+
+        function showMsg(txt) {
+            const msg = document.getElementById('custom-message');
+            msg.innerText = txt;
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 2500);
+        }
+
+        function switchView(viewId) {
+            ['home', 'calc', 'quiz', 'mood'].forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+                document.getElementById('nav-' + v)?.classList.remove('active');
+            });
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+            document.getElementById('nav-' + viewId)?.classList.add('active');
+            if(viewId === 'mood') renderMoodCalendar();
+            window.scrollTo(0,0);
+        }
+
+        // --- BMI / TDEE Logic ---
+        function setCalcMode(mode) {
+            document.getElementById('btn-bmi-mode').classList.toggle('btn-outline', mode !== 'BMI');
+            document.getElementById('btn-tdee-mode').classList.toggle('btn-outline', mode !== 'TDEE');
+            document.getElementById('tdee-extra-inputs').classList.toggle('hidden', mode === 'BMI');
+            document.getElementById('calc-result').classList.add('hidden');
+        }
+
+        function calculate() {
+            const h = parseFloat(document.getElementById('calc-height').value);
+            const w = parseFloat(document.getElementById('calc-weight').value);
+            const age = parseInt(document.getElementById('calc-age').value || "0");
+            const gender = document.getElementById('calc-gender').value;
+            const act = parseFloat(document.getElementById('calc-activity').value);
+
+            const isTDEE = !document.getElementById('tdee-extra-inputs').classList.contains('hidden');
+
+            if (h <= 0 || w <= 0 || (isTDEE && age <= 0)) {
+                showMsg("輸入錯誤，所有數值必須大於 0");
+                return;
+            }
+
+            const resBox = document.getElementById('calc-result');
+            const resTitle = document.getElementById('res-title');
+            const resVal = document.getElementById('res-val');
+            const resStatus = document.getElementById('res-status');
+            const resIdeal = document.getElementById('res-ideal');
+            const resAdvice = document.getElementById('res-advice');
+
+            resBox.classList.remove('hidden');
+
+            if(!isTDEE) {
+                // --- BMI Mode ---
+                const bmi = (w / ((h/100)**2)).toFixed(1);
+                const idealLow = (18.5 * (h/100)**2).toFixed(1);
+                const idealHigh = (24 * (h/100)**2).toFixed(1);
+
+                resTitle.innerText = "BMI 計算結果";
+                resVal.innerText = bmi;
+                resStatus.innerText = "您的狀態：" + (bmi < 18.5 ? "過輕" : bmi < 24 ? "正常" : bmi < 27 ? "過重" : "肥胖");
+                resIdeal.innerText = `理想體重參考：${idealLow} ~ ${idealHigh} kg`;
+
+                let advice = "";
+                if(bmi < 18.5) advice = "目前的數值顯示您的體重偏輕。這可能代表身體的抵抗力較弱或肌肉量不足。建議您在日常飲食中適度增加優質蛋白質與健康油脂的攝取，並搭配負重運動來提升代謝與肌肉質量，溫柔地為身體補充能量。";
+                else if(bmi < 24) advice = "恭喜您！您的體態目前維持在非常標準且健康的區間。這顯示您目前具備良好的生活節奏與均衡的飲食習慣。請繼續保持這份輕盈的活力，這份身心的平衡將是您維持長期健康最強大的資產。";
+                else advice = "目前的數值略微偏高，這是一段溫柔提醒您需要微調生活方式的訊號。建議可以嘗試從減少精緻糖分開始，並在每天規律增加行走時間，讓身體逐漸恢復彈性。健康是一段調整的過程，請保持耐心與信心。";
+                resAdvice.innerText = advice;
+            } else {
+                // --- TDEE Mode ---
+                // Mifflin-St Jeor Formula
+                let bmr;
+                if (gender === 'male') {
+                    bmr = (10 * w) + (6.25 * h) - (5 * age) + 5;
+                } else {
+                    bmr = (10 * w) + (6.25 * h) - (5 * age) - 161;
+                }
+                const tdee = Math.round(bmr * act);
+                resTitle.innerText = "TDEE 計算結果";
+                resVal.innerText = tdee + " kcal";
+                resStatus.innerText = "基礎代謝率 BMR：" + Math.round(bmr) + " kcal";
+                resIdeal.innerText = ""; 
+
+                // --- Dynamic Personalized Advice (Integrated) ---
+                const bmiVal = (w / ((h/100)**2)).toFixed(1);
+                let bmiStatus = bmiVal < 18.5 ? "過輕" : bmiVal < 24 ? "正常" : bmiVal < 27 ? "過重" : "肥胖";
+                let actDesc = act === 1.2 ? "久坐不動" : act === 1.375 ? "輕量活動" : act === 1.55 ? "中度活動" : act === 1.725 ? "高度活動" : act === 1.9 ? "極高活動" : "自定義係數";
+                
+                let intro = `基礎代謝率（BMR）反映了您在靜止狀態下的基本能量需求，而 TDEE（${tdee} kcal）則是您維持現狀所需的總熱量。\n\n`;
+                
+                let actAdvice = "";
+                if (act <= 1.2) {
+                    actAdvice = "由於您的日常活動量較低，代謝效能可能處於待機狀態。建議您從「微運動」開始，例如每小時起身活動 5 分鐘、每天多增加 2,000 步的行走量。這能有效活化您的內分泌系統，並改善下肢循環。";
+                } else if (act <= 1.375) {
+                    actAdvice = "您已經有了初步的活動習慣，這對心血管健康很有幫助。建議進一步固定每週 150 分鐘的中強度運動（如快走），並加入基礎肌力訓練（如深蹲或撐體），能幫助您建構肌肉，提高不運動時的能量消耗。";
+                } else {
+                    actAdvice = "您的活動量非常理想，身體正處於高代謝狀態。此時需特別注意運動後的營養補充，攝取適量澱粉與優質蛋白以加速修復。若感到疲勞感持續，應適度增加伸展與充足睡眠，避免過度訓練導致壓力皮質醇上升。";
+                }
+
+                let physicalAdvice = "";
+                if (bmiStatus === "過輕") {
+                    physicalAdvice = "\n\n飲食方面，建議適度增加複合式碳水與優質蛋白質攝取，採取少量多餐的方式，並專注於肌力訓練來提升肌肉量而非單純脂肪，這能讓您的體態更健康飽滿。";
+                } else if (bmiStatus === "過重" || bmiStatus === "肥胖") {
+                    physicalAdvice = "\n\n建議採取穩定的熱量赤字，並以「原型食物」為主，每餐確保有手掌大小的蛋白質與兩份深色蔬菜。減少精緻糖分的攝取，能穩定血糖水平，避免脂肪在腹部堆積。";
+                } else {
+                    physicalAdvice = "\n\n目前狀態良好，建議維持目前的均衡比例。保持每日體重乘上 30cc 的水分攝取，這對於維持代謝效能與皮膚彈性至關重要。";
+                }
+
+                const targetAdvice = "";
+                resAdvice.innerText = intro + actAdvice + physicalAdvice + targetAdvice;
+            }
+        }
+
+        // --- Quiz Logic ---
+        const quizQuestions = [
+            { cat: "🏃‍♂️ 一、運動", q: "第 1 題｜身體活動頻率<br><small>最近一個月，你主動讓身體活動的頻率大約是？</small>", opts: ["幾乎沒有特別運動，平常大多久坐", "偶爾想到才會動一下", "有固定運動習慣，每週會安排幾次", "運動已經是生活的一部分，幾乎每週進行"] },
+            { cat: "🏃‍♂️ 一、運動", q: "第 2 題｜運動後的身體感受<br><small>你平常的運動狀態比較接近哪一種？</small>", opts: ["幾乎不太會流汗或喘", "身體會稍微熱起來，但不算累", "會明顯流汗，感受到身體被啟動", "常進行高強度訓練，運動後會明顯疲勞"] },
+            { cat: "😴 二、睡眠", q: "第 3 題｜近期睡眠時數<br><small>最近這段時間，你平均每天的睡眠時間大約是？</small>", opts: ["常常睡不夠，少於 5 小時", "大約 5～6 小時左右", "約 6～7 小時，還算穩定", "幾乎都能睡滿 7 小時以上"] },
+            { cat: "😴 二、睡眠", q: "第 4 題｜醒來時的精神狀態<br><small>大部分時候，你早上醒來的感覺是？</small>", opts: ["很疲累，好像根本沒休息到", "普通，需要一段時間才有精神", "精神還不錯，大多能正常開始一天", "狀態很好，醒來後感覺充滿能量"] },
+            { cat: "💭 三、心理", q: "第 5 題｜壓力狀況<br><small>你最近的壓力程度如何？</small>", opts: ["經常感到壓力大、焦慮或疲憊", "偶爾會被壓力影響情緒", "雖然有壓力，但大致能調整", "情緒相對穩定，能保持平衡感"] },
+            { cat: "💭 三、心理", q: "第 6 題｜面對低潮時的反應<br><small>當你情緒低落或壓力很大時，你通常會？</small>", opts: ["把情緒悶著，不太想面對", "用滑手機、追劇等方式轉移注意力", "找人聊天、休息或做放鬆的事", "主動整理情緒，並試著找到真正原因"] },
+            { cat: "🥗 四、飲食", q: "第 7 題｜平常的飲食狀態<br><small>你目前的飲食習慣比較像？</small>", opts: ["常常隨便吃、外食或飲食不規規律", "偶爾會注意健康，但不太固定", "大致均衡，會留意營養搭配", "很重視飲食品質，也有穩定習慣"] },
+            { cat: "🥗 四、飲食", q: "第 8 題｜日常補水習慣<br><small>你每天的飲品選擇通常是？</small>", opts: ["很常喝含糖飲料，喝水比較少", "水跟飲料差不多各一半", "大多以白開水為主，偶爾喝飲料", "幾乎都喝水，會主動注意補水量"] }
+        ];
+        let quizIdx = 0, totalScore = 0;
+        function startQuiz() {
+            quizIdx = 0; totalScore = 0;
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-content').classList.remove('hidden');
+            showQuizQuestion();
+        }
+        function showQuizQuestion() {
+            const q = quizQuestions[quizIdx];
+            document.getElementById('quiz-cat-name').innerText = q.cat;
+            document.getElementById('quiz-progress-text').innerText = `${quizIdx + 1} / 8`;
+            document.getElementById('quiz-progress-fill').style.width = ((quizIdx + 1) / 8 * 100) + "%";
+            document.getElementById('quiz-question').innerHTML = q.q;
+            const cont = document.getElementById('quiz-options');
+            cont.innerHTML = "";
+            q.opts.forEach((o, i) => {
+                const div = document.createElement('div');
+                div.className = "quiz-option";
+                div.innerHTML = `<span class="prefix">${String.fromCharCode(65 + i)}</span><span>${o}</span>`;
+                div.onclick = () => { totalScore += (i + 1); quizIdx++; if(quizIdx < 8) showQuizQuestion(); else finishQuiz(); };
+                cont.appendChild(div);
+            });
+        }
+        function finishQuiz() {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+            document.getElementById('qres-score').innerText = `獲得總分：${totalScore} 分`;
+            let res;
+            if(totalScore <= 16) res = { type: "⚠️ 失衡警訊型", f: "身心處於高風險狀態。作息不穩且壓力調適能力較低。", d: "💥 可能面臨的問題", dt: "長期累積疲勞、專注力下降，免疫力也可能逐漸受損。", s: ["從每天散步 10 分鐘開始", "穩定睡眠時間", "減少含糖飲料", "尋找抒壓出口"] };
+            else if(totalScore <= 24) res = { type: "🙂 普通維持型", f: "整體狀態還可以，規律性不夠穩定，容易在不知不覺中累積壓力。", d: "⚠️ 潛在盲點", dt: "容易因「覺得還可以」而忽略改善，導致狀態起伏較大。", s: ["建立每週 2 天的固定運動", "每天睡足 7 小時", "保留靜心不滑手機的時間", "增加飲食中蔬菜比例"] };
+            else if(totalScore <= 28) res = { type: "✨ 健康穩定型", f: "健康狀態穩定且良好。能有效調適壓力並維持均衡生活。", d: "⚠️ 溫柔小提醒", dt: "有時可能顯得「過度自律」，需注意隱性壓力的累積。", s: ["保持現有習慣，避免強求完美", "加入放鬆型休閒活動", "定期深度檢視情緒狀態"] };
+            else res = { type: "🔥 全方位健康型", f: "身心狀態非常接近最佳化。具備極佳的運動與飲食習慣。", d: "⚠️ 潛在風險", dt: "可能因追求完美而產生「健康焦慮」，對生活細節要求過高。", s: ["保持生活彈性，享受意外驚喜", "嘗試不同類型的休閒活動", "主動成為他人的健康榜樣"] };
+            document.getElementById('qres-type').innerText = res.type;
+            document.getElementById('qres-feature').innerText = res.f;
+            document.getElementById('qres-danger-title').innerHTML = `<span>⚠️</span> ${res.d}`;
+            document.getElementById('qres-danger').innerText = res.dt;
+            document.getElementById('qres-suggestions').innerHTML = res.s.map(i => `<li>${i}</li>`).join("");
+        }
+
+        // --- Mood Logic (Synthesized Blended Advice) ---
+        function changeMonth(offset) {
+            currentMonth += offset;
+            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+            else if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderMoodCalendar();
+            if(!document.getElementById('mood-stats-view').classList.contains('hidden')) renderMoodChart();
+        }
+
+        function renderMoodCalendar() {
+            const grid = document.getElementById('calendar-mood-grid');
+            grid.innerHTML = "";
+            const days = new Date(currentYear, currentMonth + 1, 0).getDate();
+            document.getElementById('calendar-mood-title').innerText = `${currentYear} 年 ${currentMonth + 1} 月`;
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+            for(let i = 1; i <= days; i++) {
+                const dateKey = `${currentYear}-${currentMonth+1}-${i}`;
+                const day = document.createElement('div');
+                day.className = "calendar-day" + (dateKey === todayStr ? " is-today" : "");
+                day.innerText = i;
+                if(moodData[dateKey]) {
+                    const dot = document.createElement('div');
+                    dot.className = `marker-dot color-${moodData[dateKey]}`;
+                    day.appendChild(dot);
+                }
+                day.onclick = () => {
+                    selectedMoodDate = dateKey;
+                    document.getElementById('mood-picker-date').innerText = `選擇 ${dateKey} 的情緒`;
+                    document.getElementById('mood-picker').classList.remove('hidden');
+                    document.getElementById('mood-calendar-view').classList.add('hidden');
+                    selectedMoodColor = moodData[dateKey] || null;
+                    document.querySelectorAll('.mood-option-wrapper').forEach(o => o.classList.toggle('selected', o.dataset.mood === selectedMoodColor));
+                };
+                grid.appendChild(day);
+            }
+        }
+
+        function selectMood(color) {
+            selectedMoodColor = color;
+            document.querySelectorAll('.mood-option-wrapper').forEach(opt => opt.classList.toggle('selected', opt.dataset.mood === color));
+        }
+
+        function saveMood() {
+            if(!selectedMoodColor) return;
+            moodData[selectedMoodDate] = selectedMoodColor;
+            localStorage.setItem('health_plus_moods_v8', JSON.stringify(moodData));
+            closeMoodPicker(); renderMoodCalendar();
+        }
+
+        function closeMoodPicker() {
+            document.getElementById('mood-picker').classList.add('hidden');
+            document.getElementById('mood-calendar-view').classList.remove('hidden');
+        }
+
+        function switchMoodView(view) {
+            document.getElementById('mood-calendar-view').classList.toggle('hidden', view === 'stats');
+            document.getElementById('mood-stats-view').classList.toggle('hidden', view !== 'stats');
+            if(view === 'stats') renderMoodChart();
+        }
+
+        function renderMoodChart() {
+            const counts = {orange:0, green:0, blue:0, gray:0, purple:0, brown:0};
+            const prefix = `${currentYear}-${currentMonth+1}-`;
+            Object.keys(moodData).forEach(key => {
+                if(key.startsWith(prefix)) counts[moodData[key]]++;
+            });
+
+            if(myChart) myChart.destroy();
+            myChart = new Chart(document.getElementById('moodChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['開心', '平靜', '焦慮', '疲憊', '難過', '生氣'],
+                    datasets: [{ data: Object.values(counts), backgroundColor: ['#E8C29E', '#8F9E8B', '#788896', '#BDBDBD', '#95869E', '#7D5A44'], borderWidth: 0 }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const sortedMoods = Object.entries(counts).filter(c => c[1] > 0).sort((a,b) => b[1] - a[1]);
+            const adviceBox = document.getElementById('ai-mood-text');
+            if(sortedMoods.length === 0) {
+                adviceBox.innerText = "本月尚無紀錄，快去填寫月曆吧。";
+                return;
+            }
+
+            // --- Blended Logic ---
+            const moodFragments = {
+                orange: {
+                    n: "開心",
+                    f: `看見你最近的心情充滿了明亮的橙色，這真是一件值得慶祝的事。正向心理學中的「拓展與建構理論」告訴我們，喜悅的情緒能幫助我們開闊思維，讓我們更有創造力去面對生活。這份快樂不僅僅是當下的滿足，它更是在為你的心理韌性積蓄能量。請好好珍惜這份能量，你可以試著將這些開心的瞬間寫成日記，或與身邊的人分享這份溫度的來源。這不僅能讓快樂在當下加倍，還能在未來遇到低潮時，成為你心中最強大的支撐力量。繼續保持這份對生活的熱愛，讓幸福的頻率自然地延續下去，你的光芒也會感染身邊的人。`,
+                    a: `延續這份愉快的能量，將當下的幸福感轉化為日常儀式感的一部分。`
+                },
+                green: {
+                    n: "平靜",
+                    f: `最近的你展現出一種如森林般靜謐的穩定感，這在忙碌的現代生活中是非常難得的靈魂狀態。平靜並非代表停滯不前，而是一種內在的平衡與深度修復。這是一個非常適合進行深度閱讀、冥想或簡單與內心誠實對話的契機。在這種狀態下，你的直覺往往最為敏銳，能看清平時被喧囂掩蓋的細節。不需要刻意追求外在的改變，順應當下的節奏即可。讓身體與心靈在這種寧靜中獲得徹底的滋養與充電，這將為你下一次的出發積蓄溫柔且堅定的力量。這份安定的力量是你最寶貴的資產。`,
+                    a: `利用這個寧靜的時刻，進行深度自我覺察與情緒整理。`
+                },
+                blue: {
+                    n: "焦慮",
+                    f: `感覺到焦慮的迷霧正在困擾著你嗎？請記得，焦慮本質上是身體在試圖保護你，提醒你面對未知時的謹慎。試著練習「5-4-3-2-1 感官著陸法」：找出身邊 5 個能看到的、4 個能觸摸的、3 個能聽到的、2 個能聞到的與 1 個能嚐到的事物。這能幫助你的思緒從未來的失控想像中回到踏實的現在。焦慮不需要被排斥，而是需要被溫柔地看見與安撫。把龐大的任務拆成最小的步驟，一次只做一件最簡單的小事，你會發現那些讓你窒息的壓力正一點點消散，而你其實一直都有應對的能力。`,
+                    a: `練習「5-4-3-2-1 感官著陸法」，讓思緒回到現在。`
+                },
+                gray: {
+                    n: "疲憊",
+                    f: `那種揮之不去的疲憊感，是身體在向你發出的溫柔提醒，告訴你它需要真正的關機。現代人的疲勞往往不只是體力消耗，更多是資訊過載導致的心理枯竭。建議你今天給自己一段完全的「數位斷網時間」，遠離手機與所有螢幕，嘗試進行簡單的深呼吸或聽聽白噪音。哪怕只是閉上眼安靜坐著十五分鐘，不帶任何目的，也能讓神經系統得到喘息。請不要責怪自己現在的低效率，充足的休息是為了更高質量的進步，今晚請務必比平時早點入睡，讓生理節律重新找回律動感。`,
+                    a: `給自己一段不帶目的的數位斷網時間，讓身心真正休息。`
+                },
+                purple: {
+                    n: "難過",
+                    f: `當悲傷的紫意襲來，請允許自己停下來，給情緒一個流動的出口。悲傷是心靈在進行一場漫長的告別或療癒過程，壓抑它只會讓負擔更重。你可以試著流淚，或是在安靜的角落擁抱一下脆弱的自己。心理學認為，完全接納情緒是療癒的開端。你可以聽一些溫柔的慢節奏音樂，或是把難受的感覺寫在紙上隨後撕掉。請相信，現在的沈重只是暫時的雲層，陽光依然存在於雲端之後，只是暫時被遮擋了。不需要急著變好，溫柔地對待自己，就是你目前最重要且最勇敢的一件事。`,
+                    a: `允許自己感受悲傷，給情緒一個溫柔的出口。`
+                },
+                brown: {
+                    n: "生氣",
+                    f: `憤怒像是一把雙面刃，它反映出你內在的底線受到了侵犯，或是某個深層需求未被滿足。在憤怒的當下，請給自己一個「生理緩衝期」，深呼吸十次，暫時離開讓你感到衝突的環境。試著分析憤怒背後藏著的是什麼？是失望、恐懼還是受挫感？當你學會解讀憤怒背後的語言，你就能更有力量地去溝通與解決核心問題。運動或是書寫極佳的發洩管道，能將這股強烈的情緒轉化為實質的改變動力。請記住，你可以生氣，但不要讓生氣控制了你的行為，冷靜後的你更有智慧。`,
+                    a: `先給自己冷靜時間，然後試著解讀憤怒背後的真正需求。`
+                }
+            };
+
+            const top3 = sortedMoods.slice(0, 3).map(m => m[0]);
+            const names = top3.map(k => moodFragments[k].n).join('、');
+            
+            let finalAdvice = `回顧本月，您的心靈畫布由 ${names} 交織而成。我們看見 ${moodFragments[top3[0]].f}`;
+            if(top3[1]) finalAdvice += ` 同時，這份能量與 ${moodFragments[top3[1]].n} 的感覺相互交錯，形成了獨特的生命韻律。`;
+            if(top3[2]) finalAdvice += ` 偶爾穿插其中的 ${moodFragments[top3[2]].n} 則像是細微的轉折，豐富了您的內在風景。`;
+
+            finalAdvice += `\n\n基於這樣的狀態，建議您可以在接下來的日子裡，先透過 ${moodFragments[top3[0]].a}`;
+            if(top3[1]) finalAdvice += ` 緊接著，試著配合 ${moodFragments[top3[1]].a} 的練習，這能幫助您在不同情緒維度之間找到更好的平衡點。`;
+            
+            finalAdvice += `\n\n這種多元情緒的流動，證明了您具備細膩的感受力與生命力。不需要刻意追求單一的快樂，而是學習如何與這些起伏溫柔共處。請跟自己說聲：這段時間辛苦了，我們做得很好。下個月，讓我們繼續在呼吸之間，找回最舒適的自己。`;
+
+            adviceBox.innerText = finalAdvice;
+        }
+
+        window.onload = () => { lucide.createIcons(); switchView('home'); };
+    </script>
+</body>
+</html>
