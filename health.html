@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health+ | 健康加分站</title>
-    <!-- 字體與圖標 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2AlPLTKLwMKrDL2Rg64N8a-1D0afv-Pg&libraries=places"></script>
+    
     <style>
         :root {
             --bg-main: #F7F5F2;
@@ -192,6 +194,33 @@
             margin-bottom: 1rem;
         }
 
+        /* --- Map Features --- */
+        .place-item {
+            background: var(--bg-main);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--khaki-light);
+            transition: all 0.3s;
+            text-align: left;
+            cursor: pointer; /* 變更游標為手指形狀，提示可點擊 */
+        }
+        .place-item:hover {
+            border-color: var(--green-main);
+            transform: translateX(5px);
+            background: #fff;
+        }
+        .place-name {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+        .place-address {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
         /* --- Calendar Logic --- */
         .calendar-nav {
             display: flex;
@@ -323,7 +352,7 @@
 </head>
 <body>
 
-    <div id="custom-message" class="hidden">輸入錯誤，請檢查數值</div>
+    <div id="custom-message" class="hidden">提示訊息</div>
 
     <header>
         <div class="logo" onclick="switchView('home')">
@@ -335,6 +364,7 @@
                 <li><a onclick="switchView('calc')" id="nav-calc">計算器</a></li>
                 <li><a onclick="switchView('quiz')" id="nav-quiz">健康測驗</a></li>
                 <li><a onclick="switchView('mood')" id="nav-mood">情緒牆</a></li>
+                <li><a onclick="switchView('map')" id="nav-map">健康神隊友</a></li>
                 <li><a>關於我們</a></li>
                 <li><a>登入</a></li>
             </ul>
@@ -342,7 +372,6 @@
     </header>
 
     <main id="view-container">
-        <!-- Home -->
         <section id="view-home" class="view fade-in">
             <div class="hero">
                 <h1>健康加分站</h1>
@@ -365,10 +394,44 @@
                     <h3>情緒顏色牆</h3>
                     <p>用顏色紀錄每日心情</p>
                 </div>
+                <div class="feature-item" onclick="switchView('map')">
+                    <i data-lucide="map-pin" class="feature-icon"></i>
+                    <h3>健康神隊友</h3>
+                    <p>尋找附近的運動角落</p>
+                </div>
             </div>
         </section>
 
-        <!-- BMI/TDEE Calculator -->
+        <section id="view-map" class="view hidden fade-in">
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="color: var(--milk-tea); font-weight: 500; font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px;">TEAMMATE</div>
+                    <h2 class="title-serif" style="font-size: 2rem;">健康神隊友</h2>
+                    <p style="color: var(--text-light);">尋找離您最近的健康好去處，踏出溫柔運動的第一步。</p>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <button class="btn" onclick="initMapWithLocation()">
+                        <i data-lucide="navigation"></i> 尋找附近的運動場所
+                    </button>
+                </div>
+
+                <div id="map-layout" style="display: flex; flex-direction: column; gap: 20px;">
+                    <div id="map-container" style="width: 100%; height: 400px; border-radius: 20px; background-color: var(--bg-main); border: 1px solid var(--khaki-light); overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        <p id="map-placeholder" style="color: var(--text-light);">請點擊上方按鈕授權定位，地圖將會顯示在這裡。</p>
+                        <div id="map" style="width: 100%; height: 100%; display: none;"></div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="title-serif" style="font-size: 1.2rem; margin-bottom: 1rem;">📍 推薦場所 (可點選看詳細資訊)</h3>
+                        <div id="places-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto; padding-right: 5px;">
+                            <p style="color: var(--text-light); grid-column: 1 / -1; text-align: center; padding: 2rem 0;">目前尚未載入地點資料</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="view-calc" class="view hidden fade-in">
             <div class="card">
                 <h2 class="title-serif">BMI & TDEE 計算器</h2>
@@ -420,7 +483,6 @@
             </div>
         </section>
 
-        <!-- Quiz -->
         <section id="view-quiz" class="view hidden fade-in">
             <div id="quiz-intro" class="card" style="text-align: center;">
                 <div style="color: var(--milk-tea); font-weight: 500; font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px;">MINDFULNESS</div>
@@ -470,7 +532,6 @@
             </div>
         </section>
 
-        <!-- Mood Wall -->
         <section id="view-mood" class="view hidden fade-in">
             <div class="card">
                 <h2 class="title-serif">情緒顏色牆</h2>
@@ -495,7 +556,6 @@
                 </div>
             </div>
 
-            <!-- Mood Picker -->
             <div id="mood-picker" class="card hidden fade-in">
                 <h3 class="title-serif" id="mood-picker-date">選擇情緒</h3>
                 <div class="mood-pallette-grid">
@@ -550,8 +610,9 @@
             setTimeout(() => msg.classList.add('hidden'), 2500);
         }
 
+        // 切換視圖功能 (已包含 map 路由控制)
         function switchView(viewId) {
-            ['home', 'calc', 'quiz', 'mood'].forEach(v => {
+            ['home', 'map', 'calc', 'quiz', 'mood'].forEach(v => {
                 document.getElementById('view-' + v).classList.add('hidden');
                 document.getElementById('nav-' + v)?.classList.remove('active');
             });
@@ -560,6 +621,141 @@
             if(viewId === 'mood') renderMoodCalendar();
             window.scrollTo(0,0);
         }
+
+        // --- Google Maps / 健康神隊友 Logic ---
+        let map;
+        let mapService;
+
+        // 初始化定位與地圖
+        function initMapWithLocation() {
+            if (navigator.geolocation) {
+                showMsg("正在為您尋找座標，請稍候...");
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                        };
+                        displayMapAndPlaces(userLocation);
+                    },
+                    (error) => {
+                        console.error(error);
+                        showMsg("無法獲取您的位置，請確認是否已允許瀏覽器開啟定位權限。");
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            } else {
+                showMsg("非常抱歉，您的瀏覽器似乎不支援地理位置功能。");
+            }
+        }
+
+        // 繪製地圖並發送 Places 搜尋請求
+        function displayMapAndPlaces(location) {
+            document.getElementById('map-placeholder').style.display = 'none';
+            const mapElement = document.getElementById('map');
+            mapElement.style.display = 'block';
+
+            // 建立地圖實例
+            map = new google.maps.Map(mapElement, {
+                center: location,
+                zoom: 14,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: false,
+                styles: [
+                    {featureType: "water", stylers: [{color: "#EAE5DD"}]},
+                    {featureType: "landscape", stylers: [{color: "#F7F5F2"}]},
+                    {featureType: "poi.park", stylers: [{color: "#d5dfd1"}]}
+                ]
+            });
+
+            // 標示使用者目前的位置
+            new google.maps.Marker({
+                position: location,
+                map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                title: "您目前的位置"
+            });
+
+            // 設定搜尋條件
+            const request = {
+                location: location,
+                radius: '2500', 
+                keyword: '健身房 OR 運動中心 OR 體育場'
+            };
+
+            mapService = new google.maps.places.PlacesService(map);
+            mapService.nearbySearch(request, handlePlacesResults);
+        }
+
+        // 處理 Places API 回傳的搜尋結果
+        function handlePlacesResults(results, status) {
+            const listContainer = document.getElementById("places-list");
+            listContainer.innerHTML = ""; 
+
+            if (status === google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+                showMsg(`為您找到了 ${results.length} 個運動場所！`);
+                for (let i = 0; i < results.length; i++) {
+                    createMapMarker(results[i]);
+                    appendPlaceCard(results[i], listContainer);
+                }
+            } else {
+                listContainer.innerHTML = "<p style='color: var(--text-light); grid-column: 1 / -1; text-align: center; padding: 2rem 0;'>附近暫時找不到相關運動場所，或許可以從簡單的居家伸展開始喔！</p>";
+            }
+        }
+
+        // 幫搜尋到的每個地點標上地圖大頭針
+        function createMapMarker(place) {
+            if (!place.geometry || !place.geometry.location) return;
+            new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                title: place.name
+            });
+        }
+
+        // 將地點資訊繪製成列表卡片
+        function appendPlaceCard(place, container) {
+            const div = document.createElement('div');
+            div.className = 'place-item';
+            
+            // 新增功能：點擊整張卡片直接跳轉至 Google 地圖商家頁面
+            div.onclick = () => {
+                if (place.place_id) {
+                    // 利用 Google Maps 官方的 URL 規範，代入店名與 Place ID 進行導向
+                    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}&query_place_id=${place.place_id}`;
+                    window.open(mapsUrl, '_blank'); // 開啟新分頁
+                }
+            };
+            
+            // 處理營業狀態（若有提供資料）
+            let openStatusHtml = '';
+            if (place.opening_hours) {
+                const isOpen = place.opening_hours.isOpen();
+                openStatusHtml = `<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; background: ${isOpen ? '#d5dfd1' : '#f0f0f0'}; color: ${isOpen ? 'var(--green-dark)' : 'var(--text-light)'}; margin-left: 8px;">${isOpen ? '營業中' : '休息中'}</span>`;
+            }
+
+            const ratingStar = place.rating ? place.rating : '無';
+            const userRatings = place.user_ratings_total ? place.user_ratings_total + ' 則評論' : '無評論';
+
+            div.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="place-name">${place.name}</div>
+                    ${openStatusHtml}
+                </div>
+                <div class="place-address" style="margin-top: 4px;">
+                    <i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> 
+                    ${place.vicinity || '無地址資訊'}
+                </div>
+                <div style="font-size: 0.85rem; color: var(--milk-tea); margin-top: 8px; font-weight: 500;">
+                    ⭐ ${ratingStar} (${userRatings})
+                </div>
+            `;
+            container.appendChild(div);
+            // 重新觸發 lucide 渲染動態產生的圖標
+            lucide.createIcons({ root: div });
+        }
+
 
         // --- BMI / TDEE Logic ---
         function setCalcMode(mode) {
@@ -604,13 +800,12 @@
                 resIdeal.innerText = `理想體重參考：${idealLow} ~ ${idealHigh} kg`;
 
                 let advice = "";
-                if(bmi < 18.5) advice = "目前的數值顯示您的體重偏輕。這可能代表身體的抵抗力較弱或肌肉量不足。建議您在日常飲食中適度增加優質蛋白質與健康油脂的攝取，並搭配負重運動來提升代謝與肌肉質量，溫柔地為身體補充能量。";
+                if(bmi < 18.5) advice = "目前的數值顯示您的體重偏輕。這可能代表身體的抵抗力較弱或肌肉量不足。建議您在日常飲食中適度增加優質蛋白質與健康油脂的釋取，並搭配負重運動來提升代謝與肌肉質量，溫柔地為身體補充能量。";
                 else if(bmi < 24) advice = "恭喜您！您的體態目前維持在非常標準且健康的區間。這顯示您目前具備良好的生活節奏與均衡的飲食習慣。請繼續保持這份輕盈的活力，這份身心的平衡將是您維持長期健康最強大的資產。";
                 else advice = "目前的數值略微偏高，這是一段溫柔提醒您需要微調生活方式的訊號。建議可以嘗試從減少精緻糖分開始，並在每天規律增加行走時間，讓身體逐漸恢復彈性。健康是一段調整的過程，請保持耐心與信心。";
                 resAdvice.innerText = advice;
             } else {
                 // --- TDEE Mode ---
-                // Mifflin-St Jeor Formula
                 let bmr;
                 if (gender === 'male') {
                     bmr = (10 * w) + (6.25 * h) - (5 * age) + 5;
@@ -623,10 +818,8 @@
                 resStatus.innerText = "基礎代謝率 BMR：" + Math.round(bmr) + " kcal";
                 resIdeal.innerText = ""; 
 
-                // --- Dynamic Personalized Advice (Integrated) ---
                 const bmiVal = (w / ((h/100)**2)).toFixed(1);
                 let bmiStatus = bmiVal < 18.5 ? "過輕" : bmiVal < 24 ? "正常" : bmiVal < 27 ? "過重" : "肥胖";
-                let actDesc = act === 1.2 ? "久坐不動" : act === 1.375 ? "輕量活動" : act === 1.55 ? "中度活動" : act === 1.725 ? "高度活動" : act === 1.9 ? "極高活動" : "自定義係數";
                 
                 let intro = `基礎代謝率（BMR）反映了您在靜止狀態下的基本能量需求，而 TDEE（${tdee} kcal）則是您維持現狀所需的總熱量。\n\n`;
                 
@@ -636,20 +829,19 @@
                 } else if (act <= 1.375) {
                     actAdvice = "您已經有了初步的活動習慣，這對心血管健康很有幫助。建議進一步固定每週 150 分鐘的中強度運動（如快走），並加入基礎肌力訓練（如深蹲或撐體），能幫助您建構肌肉，提高不運動時的能量消耗。";
                 } else {
-                    actAdvice = "您的活動量非常理想，身體正處於高代謝狀態。此時需特別注意運動後的營養補充，攝取適量澱粉與優質蛋白以加速修復。若感到疲勞感持續，應適度增加伸展與充足睡眠，避免過度訓練導致壓力皮質醇上升。";
+                    actAdvice = "您的活動量非常理想，身體正處於高代謝狀態。此時需特別注意運動後的營養補充，釋取適量澱粉與優質蛋白以加速修復。若感到疲勞感持續，應適度增加伸展與充足睡眠，避免過度訓練導致壓力皮質醇上升。";
                 }
 
                 let physicalAdvice = "";
                 if (bmiStatus === "過輕") {
-                    physicalAdvice = "\n\n飲食方面，建議適度增加複合式碳水與優質蛋白質攝取，採取少量多餐的方式，並專注於肌力訓練來提升肌肉量而非單純脂肪，這能讓您的體態更健康飽滿。";
+                    physicalAdvice = "\n\n飲食方面，建議適度增加複合式碳水與優質蛋白質釋取，採取少量多餐的方式，並專注於肌力訓練來提升肌肉量而非單純脂肪，這能讓您的體態更健康飽滿。";
                 } else if (bmiStatus === "過重" || bmiStatus === "肥胖") {
-                    physicalAdvice = "\n\n建議採取穩定的熱量赤字，並以「原型食物」為主，每餐確保有手掌大小的蛋白質與兩份深色蔬菜。減少精緻糖分的攝取，能穩定血糖水平，避免脂肪在腹部堆積。";
+                    physicalAdvice = "\n\n建議採取穩定的熱量赤字，並以「原型食物」為主，每餐確保有手掌大小的蛋白質與兩份深色蔬菜。減少精緻糖分的釋取，能穩定血糖水平，避免脂肪在腹部堆積。";
                 } else {
-                    physicalAdvice = "\n\n目前狀態良好，建議維持目前的均衡比例。保持每日體重乘上 30cc 的水分攝取，這對於維持代謝效能與皮膚彈性至關重要。";
+                    physicalAdvice = "\n\n目前狀態良好，建議維持目前的均衡比例。保持每日體重乘上 30cc 的水分釋取，這對於維持代謝效能與皮膚彈性至關重要。";
                 }
 
-                const targetAdvice = "";
-                resAdvice.innerText = intro + actAdvice + physicalAdvice + targetAdvice;
+                resAdvice.innerText = intro + actAdvice + physicalAdvice;
             }
         }
 
@@ -704,7 +896,7 @@
             document.getElementById('qres-suggestions').innerHTML = res.s.map(i => `<li>${i}</li>`).join("");
         }
 
-        // --- Mood Logic (Synthesized Blended Advice) ---
+        // --- Mood Logic ---
         function changeMonth(offset) {
             currentMonth += offset;
             if(currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -789,38 +981,13 @@
                 return;
             }
 
-            // --- Blended Logic ---
             const moodFragments = {
-                orange: {
-                    n: "開心",
-                    f: `看見你最近的心情充滿了明亮的橙色，這真是一件值得慶祝的事。正向心理學中的「拓展與建構理論」告訴我們，喜悅的情緒能幫助我們開闊思維，讓我們更有創造力去面對生活。這份快樂不僅僅是當下的滿足，它更是在為你的心理韌性積蓄能量。請好好珍惜這份能量，你可以試著將這些開心的瞬間寫成日記，或與身邊的人分享這份溫度的來源。這不僅能讓快樂在當下加倍，還能在未來遇到低潮時，成為你心中最強大的支撐力量。繼續保持這份對生活的熱愛，讓幸福的頻率自然地延續下去，你的光芒也會感染身邊的人。`,
-                    a: `延續這份愉快的能量，將當下的幸福感轉化為日常儀式感的一部分。`
-                },
-                green: {
-                    n: "平靜",
-                    f: `最近的你展現出一種如森林般靜謐的穩定感，這在忙碌的現代生活中是非常難得的靈魂狀態。平靜並非代表停滯不前，而是一種內在的平衡與深度修復。這是一個非常適合進行深度閱讀、冥想或簡單與內心誠實對話的契機。在這種狀態下，你的直覺往往最為敏銳，能看清平時被喧囂掩蓋的細節。不需要刻意追求外在的改變，順應當下的節奏即可。讓身體與心靈在這種寧靜中獲得徹底的滋養與充電，這將為你下一次的出發積蓄溫柔且堅定的力量。這份安定的力量是你最寶貴的資產。`,
-                    a: `利用這個寧靜的時刻，進行深度自我覺察與情緒整理。`
-                },
-                blue: {
-                    n: "焦慮",
-                    f: `感覺到焦慮的迷霧正在困擾著你嗎？請記得，焦慮本質上是身體在試圖保護你，提醒你面對未知時的謹慎。試著練習「5-4-3-2-1 感官著陸法」：找出身邊 5 個能看到的、4 個能觸摸的、3 個能聽到的、2 個能聞到的與 1 個能嚐到的事物。這能幫助你的思緒從未來的失控想像中回到踏實的現在。焦慮不需要被排斥，而是需要被溫柔地看見與安撫。把龐大的任務拆成最小的步驟，一次只做一件最簡單的小事，你會發現那些讓你窒息的壓力正一點點消散，而你其實一直都有應對的能力。`,
-                    a: `練習「5-4-3-2-1 感官著陸法」，讓思緒回到現在。`
-                },
-                gray: {
-                    n: "疲憊",
-                    f: `那種揮之不去的疲憊感，是身體在向你發出的溫柔提醒，告訴你它需要真正的關機。現代人的疲勞往往不只是體力消耗，更多是資訊過載導致的心理枯竭。建議你今天給自己一段完全的「數位斷網時間」，遠離手機與所有螢幕，嘗試進行簡單的深呼吸或聽聽白噪音。哪怕只是閉上眼安靜坐著十五分鐘，不帶任何目的，也能讓神經系統得到喘息。請不要責怪自己現在的低效率，充足的休息是為了更高質量的進步，今晚請務必比平時早點入睡，讓生理節律重新找回律動感。`,
-                    a: `給自己一段不帶目的的數位斷網時間，讓身心真正休息。`
-                },
-                purple: {
-                    n: "難過",
-                    f: `當悲傷的紫意襲來，請允許自己停下來，給情緒一個流動的出口。悲傷是心靈在進行一場漫長的告別或療癒過程，壓抑它只會讓負擔更重。你可以試著流淚，或是在安靜的角落擁抱一下脆弱的自己。心理學認為，完全接納情緒是療癒的開端。你可以聽一些溫柔的慢節奏音樂，或是把難受的感覺寫在紙上隨後撕掉。請相信，現在的沈重只是暫時的雲層，陽光依然存在於雲端之後，只是暫時被遮擋了。不需要急著變好，溫柔地對待自己，就是你目前最重要且最勇敢的一件事。`,
-                    a: `允許自己感受悲傷，給情緒一個溫柔的出口。`
-                },
-                brown: {
-                    n: "生氣",
-                    f: `憤怒像是一把雙面刃，它反映出你內在的底線受到了侵犯，或是某個深層需求未被滿足。在憤怒的當下，請給自己一個「生理緩衝期」，深呼吸十次，暫時離開讓你感到衝突的環境。試著分析憤怒背後藏著的是什麼？是失望、恐懼還是受挫感？當你學會解讀憤怒背後的語言，你就能更有力量地去溝通與解決核心問題。運動或是書寫極佳的發洩管道，能將這股強烈的情緒轉化為實質的改變動力。請記住，你可以生氣，但不要讓生氣控制了你的行為，冷靜後的你更有智慧。`,
-                    a: `先給自己冷靜時間，然後試著解讀憤怒背後的真正需求。`
-                }
+                orange: { n: "開心", f: `看見你最近的心情充滿了明亮的橙色，這真是一件值得慶祝的事。正向心理學中的「拓展與建構理論」告訴我們，喜悅的情緒能幫助我們開闊思維，讓我們更有創造力去面對生活。這份快樂不僅僅是當下的滿足，它更是在為你的心理韌性積蓄能量。請好好珍惜這份能量，你可以試著將這些開心的瞬間寫成日記，或與身邊的人分享這份溫度的來源。這不僅能讓快樂在當下加倍，還能在未來遇到低潮時，成為你心中最強大的支撐力量。繼續保持這份對生活的熱愛，讓幸福的頻率自然地延續下去，你的光芒也會感染身邊的人。`, a: `延續這份愉快的能量，將當下的幸福感轉化為日常儀式感的一部分。` },
+                green: { n: "平靜", f: `最近的你展現出一種如森林般靜謐的穩定感，這在忙碌的現代生活中是非常難得的靈魂狀態。平靜並非代表停滯不前，而是一種內在的平衡與深度修復。這是一個非常適合進行深度閱讀、冥想或簡單與內心誠實對話的契機。在這種狀態下，你的直覺往往最為敏銳，能看清平時被喧囂掩蓋的細節。不需要刻意追求外在的改變，順應當下的節奏即可。讓身體與心靈在這種寧靜中獲得徹底的滋養與充電，這將為你下一次的出發積蓄溫柔且堅定的力量。這份安定的力量是你最寶貴的資產。`, a: `利用這個寧靜的時刻，進行深度自我覺察與情緒整理。` },
+                blue: { n: "焦慮", f: `感覺到焦慮的迷霧正在困擾著你嗎？請記得，焦慮本質上是身體在試圖保護你，提醒你面對未知時的謹慎。試著練習「5-4-3-2-1 感官著陸法」：找出身邊 5 個能看到的、4 個能觸摸的、3 個能聽到的、2 個能聞到的與 1 個能嚐到的事物。這能幫助你的思緒從未來的失控想像中回到踏實的現在。焦慮不需要被排斥，而是需要被溫柔地看見與安撫。把龐大的任務拆成最小的步驟，一次只做一件最簡單的小事，你會發現那些讓你窒息的壓力正一點點消散，而你其實一直都有應對的能力。`, a: `練習「5-4-3-2-1 感官著陸法」，讓思緒回到現在。` },
+                gray: { n: "疲憊", f: `那種揮之不去的疲憊感，是身體在向你發出的溫柔提醒，告訴你它需要真正的關機。現代人的疲勞往往不著於體力消耗，更多是資訊過載導致的心理枯竭。建議你今天給自己一段完全的「數位斷網時間」，遠離手機與所有螢幕，嘗試進行簡單的深呼吸或聽聽白噪音。哪怕只是閉上眼安靜坐著十五分鐘，不帶任何目的，也能讓神經系統得到喘息。請不要責怪自己現在的低效率，充足的休息是為了更高質量的進步，今晚請務必比平時早點入睡，讓生理節律重新找回律動感。`, a: `給自己一段不帶目的的數位斷網時間，讓身心真正休息。` },
+                purple: { n: "難過", f: `當悲傷的紫意襲來，請允許自己停下來，給情緒一個流動的出口。悲傷是心靈在進行一場漫長的告別或療癒過程，壓抑它只會讓負擔更重。你可以試著流淚，或是在安靜的角落擁抱一下脆弱的自己。心理學認為，完全接納情緒是療癒的開端。你可以聽一些溫柔的慢節奏音樂，或是把難受的感覺寫在紙上隨後撕掉。請相信，現在的沈重只是暫時的雲層，陽光依然存在於雲端之後，只是暫時被遮擋了。不需要急著變好，溫柔地對待自己，就是你目前最重要且最勇敢的一件事。`, a: `允許自己感受悲傷，給情緒一個溫柔的出口。` },
+                brown: { n: "生氣", f: `憤怒像是一把雙面刃，它反映出你內在的底線受到了侵犯，或是某個深層需求未被滿足。在憤怒的當下，請給自己一個「生理緩衝期」，深呼吸十次，暫時離開讓你感到衝突的環境。試著分析憤怒背後藏著的是什麼？是失望、恐懼還是受挫感？當你學會解讀憤怒背後的語言，你就能更有力量地去溝通與解決核心問題。運動或是書寫極佳的發洩管道，能將這股強烈的情緒轉化為實質的改變動力。請記住，你可以生氣，但不要讓生氣控制了你的行為，冷靜後的你更有智慧。`, a: `先給自己冷靜時間，然後試著解讀憤怒背後的真正需求。` }
             };
 
             const top3 = sortedMoods.slice(0, 3).map(m => m[0]);
