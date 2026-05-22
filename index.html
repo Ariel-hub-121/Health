@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health+ | 健康加分站</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2AlPLTKLwMKrDL2Rg64N8a-1D0afv-Pg&libraries=places,geometry"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@1.16.0/dist/umd/lucide.min.js"></script>
+
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2AlPLTKLwMKrDL2Rg64N8a-1D0afv-Pg&libraries=places,geometry&loading=async&v=weekly"></script>
+
     <style>
         :root {
             --bg-main: #F7F5F2;
             --bg-card: #FFFFFF;
             --green-main: #8F9E8B;
-            --green-dark: #5F6B5A; 
+            --green-dark: #5F6B5A;
             --milk-tea: #C6A995;
             --mist-blue: #8E98A2;
             --khaki-light: #EAE5DD;
@@ -34,265 +34,53 @@
             --mood-angry: #7D5A44;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            line-height: 1.8;
-            letter-spacing: 0.05em;
-            min-height: 100vh;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-main); color: var(--text-main); font-family: var(--font-sans); line-height: 1.8; letter-spacing: 0.05em; min-height: 100vh; }
 
         /* --- Layout --- */
-        header {
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--khaki-light);
-        }
+        header { background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--khaki-light); }
+        .logo { font-family: var(--font-serif); font-weight: 700; font-size: 1.5rem; color: var(--green-main); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        nav ul { display: flex; list-style: none; gap: 1.5rem; align-items: center; }
+        nav a { text-decoration: none; color: var(--text-light); font-size: 0.95rem; transition: color 0.3s; cursor: pointer; }
+        nav a:hover, nav a.active { color: var(--green-dark); font-weight: 500; }
 
-        .logo {
-            font-family: var(--font-serif);
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--green-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text-light);
-            font-size: 0.95rem;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        nav a:hover, nav a.active {
-            color: var(--green-dark); 
-            font-weight: 500;
-        }
-
-        main {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
+        main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
 
         /* --- Components --- */
-        .card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 2.5rem;
-            box-shadow: 0 10px 30px var(--shadow);
-            margin-bottom: 2rem;
-            transition: transform 0.3s ease;
-        }
-
-        .btn {
-            background-color: var(--green-main);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            background-color: var(--green-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(95, 107, 90, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--green-main);
-            color: var(--green-main);
-        }
-
-        .title-serif {
-            font-family: var(--font-serif);
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 1rem;
-        }
-
+        .card { background: var(--bg-card); border-radius: 24px; padding: 2.5rem; box-shadow: 0 10px 30px var(--shadow); margin-bottom: 2rem; transition: transform 0.3s ease; }
+        .btn { background-color: var(--green-main); color: white; border: none; padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer; font-family: var(--font-sans); font-size: 0.95rem; transition: all 0.3s ease; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { background-color: var(--green-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(95, 107, 90, 0.3); }
+        .btn-outline { background: transparent; border: 1px solid var(--green-main); color: var(--green-main); }
+        .title-serif { font-family: var(--font-serif); font-weight: 600; color: var(--text-main); margin-bottom: 1rem; }
         .hidden { display: none !important; }
 
         /* --- Home --- */
-        .hero {
-            text-align: center;
-            padding: 3rem 1rem 2rem;
-        }
-
-        .hero h1 {
-            font-family: var(--font-serif);
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-main);
-        }
-
-        .hero p {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            margin-bottom: 2.5rem;
-        }
+        .hero { text-align: center; padding: 3rem 1rem 2rem; }
+        .hero h1 { font-family: var(--font-serif); font-size: 3rem; margin-bottom: 1.5rem; color: var(--text-main); }
+        .hero p { color: var(--text-light); font-size: 1.1rem; margin-bottom: 2.5rem; }
 
         /* 每日健康語錄樣式 */
-        .daily-quote-box {
-            background: linear-gradient(135deg, #F1EFEA, #EAE5DD);
-            padding: 1.5rem 2rem;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 3rem;
-            box-shadow: inset 0 2px 10px rgba(255,255,255,0.5);
-            border: 1px solid #E2DCD2;
-        }
+        .daily-quote-box { background: linear-gradient(135deg, #F1EFEA, #EAE5DD); padding: 1.5rem 2rem; border-radius: 20px; text-align: center; margin-bottom: 3rem; box-shadow: inset 0 2px 10px rgba(255,255,255,0.5); border: 1px solid #E2DCD2; }
+        .daily-quote-box p { font-family: var(--font-serif); font-size: 1.15rem; color: var(--text-main); margin: 0; line-height: 1.6; }
+        .daily-quote-box span { display: block; font-size: 0.8rem; color: var(--green-main); margin-bottom: 8px; letter-spacing: 0.1em; font-weight: 500; }
 
-        .daily-quote-box p {
-            font-family: var(--font-serif);
-            font-size: 1.15rem;
-            color: var(--text-main);
-            margin: 0;
-            line-height: 1.6;
-        }
+        /* 卡片網格系統 (Flexbox) */
+        .feature-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; margin-top: 2rem; }
+        .feature-item { background: white; padding: 2rem; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid var(--khaki-light); transition: all 0.3s ease; width: calc(33.333% - 1rem); min-width: 220px; max-width: 300px; }
+        .feature-item:hover { border-color: var(--green-main); transform: translateY(-5px); }
+        .feature-icon { color: var(--green-main); margin-bottom: 1rem; }
 
-        .daily-quote-box span {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--green-main);
-            margin-bottom: 8px;
-            letter-spacing: 0.1em;
-            font-weight: 500;
-        }
-
-        /* --- 修正後的卡片網格系統 (3/2 排列) --- */
-        .feature-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; /* 讓不足三個的排置中 */
-            gap: 1.5rem;
-        }
-
-        .feature-item {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid var(--khaki-light);
-            transition: all 0.3s ease;
-            
-            /* 設定每張卡片寬度約 33%，確保一行剛好放三個 */
-            width: calc(33.333% - 1rem); 
-            min-width: 220px; 
-            max-width: 300px;
-        }
-
-        .feature-item:hover {
-            border-color: var(--green-main);
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            color: var(--green-main);
-            margin-bottom: 1rem;
-        }
-
-        /* --- Map Features (包含懸停放大) --- */
-        .place-item {
-            background: var(--bg-main);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            border: 1px solid var(--khaki-light);
-            transition: all 0.3s;
-            text-align: left;
-            cursor: pointer;
-        }
-        .place-item:hover {
-            border-color: var(--green-main);
-            transform: translateX(5px);
-            background: #fff;
-        }
-        .place-name {
-            font-family: var(--font-serif);
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 5px;
-            font-size: 1.05rem;
-            transition: all 0.2s ease-in-out; /* 平滑過渡動畫 */
-        }
-        /* 卡片懸浮時字體放大 */
-        .place-item:hover .place-name {
-            font-size: 1.2rem; 
-            color: var(--green-dark);
-        }
-        .place-address {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
+        /* --- Map Features --- */
+        .place-item { background: var(--bg-main); padding: 1rem; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--khaki-light); transition: all 0.3s; text-align: left; cursor: pointer; }
+        .place-item:hover { border-color: var(--green-main); transform: translateX(5px); background: #fff; }
+        .place-name { font-family: var(--font-serif); font-weight: 600; color: var(--text-main); margin-bottom: 5px; font-size: 1.05rem; transition: all 0.2s ease-in-out; }
+        .place-item:hover .place-name { font-size: 1.2rem; color: var(--green-dark); }
+        .place-address { font-size: 0.85rem; color: var(--text-light); }
 
         /* --- Mailbox Features --- */
-        .mailbox-textarea {
-            width: 100%;
-            height: 180px;
-            padding: 1.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--khaki-light);
-            background: var(--bg-main);
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            color: var(--text-main);
-            resize: none;
-            outline: none;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            transition: border-color 0.3s;
-        }
-        .mailbox-textarea:focus {
-            border-color: var(--green-main);
-            background: #fff;
-        }
-        .letter-reply {
-            background: #fcfbf9;
-            padding: 2rem;
-            border-radius: 16px;
-            border-left: 4px solid var(--milk-tea);
-            margin-top: 2rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            white-space: pre-line;
-            line-height: 2;
-        }
+        .mailbox-textarea { width: 100%; height: 180px; padding: 1.5rem; border-radius: 16px; border: 1px solid var(--khaki-light); background: var(--bg-main); font-family: var(--font-sans); font-size: 1rem; color: var(--text-main); resize: none; outline: none; line-height: 1.8; margin-bottom: 1rem; transition: border-color 0.3s; }
+        .mailbox-textarea:focus { border-color: var(--green-main); background: #fff; }
+        .letter-reply { background: #fcfbf9; padding: 2rem; border-radius: 16px; border-left: 4px solid var(--milk-tea); margin-top: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); white-space: pre-line; line-height: 2; }
 
         /* --- Calendar & Mood Grid Logic --- */
         .calendar-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
@@ -306,8 +94,8 @@
         .mood-option-wrapper { text-align: center; padding: 12px 5px; border-radius: 16px; cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; align-items: center; }
         .mood-option-wrapper.selected { background-color: #f0f0f0; }
         .mood-option-wrapper.selected .mood-option-circle { border-color: var(--green-dark); transform: scale(1.1); }
-        .color-orange { background-color: var(--mood-happy); } .color-green { background-color: var(--mood-calm); } .color-blue { background-color: var(--mood-anxious); } .color-gray { background-color: var(--mood-tired); } .color-purple { background-color: var(--mood-sad); } .color-brown { background-color: var(--mood-angry); }  
-        
+        .color-orange { background-color: var(--mood-happy); } .color-green { background-color: var(--mood-calm); } .color-blue { background-color: var(--mood-anxious); } .color-gray { background-color: var(--mood-tired); } .color-purple { background-color: var(--mood-sad); } .color-brown { background-color: var(--mood-angry); } 
+
         .icon-btn { background: none; border: none; cursor: pointer; color: var(--text-light); display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: background 0.3s; }
         .icon-btn:hover { background: var(--khaki-light); color: var(--green-dark); }
         footer { text-align: center; padding: 3rem; color: var(--text-light); font-size: 0.8rem; }
@@ -319,6 +107,7 @@
         #custom-message { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 10px 25px; border-radius: 30px; z-index: 1000; font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -333,10 +122,11 @@
             <ul>
                 <li><a onclick="switchView('home')" id="nav-home" class="active">首頁</a></li>
                 <li><a onclick="switchView('calc')" id="nav-calc">計算器</a></li>
-                <li><a onclick="switchView('quiz')" id="nav-quiz">健康測驗</a></li>
+                <li><a onclick="switchView('quiz')" id="nav-quiz">測驗</a></li>
                 <li><a onclick="switchView('mood')" id="nav-mood">情緒牆</a></li>
                 <li><a onclick="switchView('map')" id="nav-map">神隊友</a></li>
                 <li><a onclick="switchView('mailbox')" id="nav-mailbox">樹洞信箱</a></li>
+                <li><a id="nav-auth" onclick="window.toggleAuth()">登入</a></li>
             </ul>
         </nav>
     </header>
@@ -352,6 +142,16 @@
             <div class="daily-quote-box" id="daily-quote-container">
                 <span id="quote-time-label">⛅ 每日療癒語錄</span>
                 <p id="quote-text">載入中...</p>
+            </div>
+
+            <div class="card hidden" id="user-profile-card" style="text-align: center;">
+                <h3 class="title-serif" id="welcome-msg">歡迎回來</h3>
+                <div style="margin: 1.5rem 0;">
+                    <img id="profile-preview" src="" alt="頭像預覽" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: none; margin: 0 auto 1rem; border: 3px solid var(--green-main);">
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">上傳您專屬的健康生活照 (將轉為 Base64 儲存至 Firestore)</p>
+                    <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="window.handleImageUpload(event)">
+                    <button class="btn btn-outline" onclick="document.getElementById('avatar-input').click()">選擇圖片並上傳</button>
+                </div>
             </div>
 
             <div class="feature-grid">
@@ -415,7 +215,6 @@
                     </div>
                 </div>
             </div>
-            <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
         </section>
 
         <section id="view-map" class="view hidden fade-in">
@@ -425,7 +224,7 @@
                     <h2 class="title-serif" style="font-size: 2rem;">健康神隊友</h2>
                     <p style="color: var(--text-light);">尋找離您最近的健康好去處，踏出溫柔運動的第一步。</p>
                 </div>
-                
+
                 <div style="text-align: center; margin-bottom: 2rem;">
                     <button class="btn" onclick="initMapWithLocation()">
                         <i data-lucide="navigation"></i> 尋找附近的運動場所
@@ -437,7 +236,7 @@
                         <p id="map-placeholder" style="color: var(--text-light);">請點擊上方按鈕授權定位，地圖將會顯示在這裡。</p>
                         <div id="map" style="width: 100%; height: 100%; display: none;"></div>
                     </div>
-                    
+
                     <div>
                         <h3 class="title-serif" style="font-size: 1.2rem; margin-bottom: 1rem;">📍 推薦場所 (可點選看詳細資訊)</h3>
                         <div id="places-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto; padding-right: 5px;">
@@ -672,7 +471,7 @@
             document.getElementById('quote-text').innerText = randomQuote;
         }
 
-        // 切換視圖功能
+        // 切換視圖功能 (已包含 map 與 mailbox 路由控制)
         function switchView(viewId) {
             ['home', 'map', 'calc', 'quiz', 'mood', 'mailbox'].forEach(v => {
                 document.getElementById('view-' + v).classList.add('hidden');
@@ -732,6 +531,7 @@
         let mapService;
         let currentUserLocation = null;
 
+        // 初始化定位與地圖
         function initMapWithLocation() {
             if (navigator.geolocation) {
                 showMsg("正在為您尋找座標，請稍候...");
@@ -754,6 +554,7 @@
             }
         }
 
+        // 繪製地圖並發送 Places 搜尋請求
         function displayMapAndPlaces(location) {
             document.getElementById('map-placeholder').style.display = 'none';
             const mapElement = document.getElementById('map');
@@ -761,6 +562,7 @@
 
             currentUserLocation = new google.maps.LatLng(location.lat, location.lng);
 
+            // 建立地圖實例
             map = new google.maps.Map(mapElement, {
                 center: location,
                 zoom: 14,
@@ -774,6 +576,7 @@
                 ]
             });
 
+            // 標示使用者目前的位置
             new google.maps.Marker({
                 position: location,
                 map: map,
@@ -781,6 +584,7 @@
                 title: "您目前的位置"
             });
 
+            // 設定搜尋條件
             const request = {
                 location: location,
                 radius: '2500', 
@@ -791,6 +595,7 @@
             mapService.nearbySearch(request, handlePlacesResults);
         }
 
+        // 處理 Places API 回傳的搜尋結果
         function handlePlacesResults(results, status) {
             const listContainer = document.getElementById("places-list");
             listContainer.innerHTML = ""; 
@@ -806,6 +611,7 @@
             }
         }
 
+        // 幫搜尋到的每個地點標上地圖大頭針
         function createMapMarker(place) {
             if (!place.geometry || !place.geometry.location) return;
             new google.maps.Marker({
@@ -815,10 +621,12 @@
             });
         }
 
+        // 將地點資訊繪製成列表卡片
         function appendPlaceCard(place, container, userLoc) {
             const div = document.createElement('div');
             div.className = 'place-item';
             
+            // 新增功能：點擊整張卡片直接跳轉至 Google 地圖商家頁面
             div.onclick = () => {
                 if (place.place_id) {
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}&query_place_id=${place.place_id}`;
@@ -826,6 +634,7 @@
                 }
             };
             
+            // 處理營業狀態
             let openStatusHtml = '';
             if (place.opening_hours) {
                 const isOpen = typeof place.opening_hours.isOpen === 'function' ? place.opening_hours.isOpen() : place.opening_hours.open_now;
@@ -834,6 +643,7 @@
                 }
             }
 
+            // 處理距離計算
             let distanceStr = '未知';
             if (userLoc && place.geometry && place.geometry.location) {
                 const distanceMeters = google.maps.geometry.spherical.computeDistanceBetween(userLoc, place.geometry.location);
@@ -1124,6 +934,140 @@
         window.onload = () => { 
             lucide.createIcons(); 
             switchView('home'); 
+        };
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAQJv_ovdxzxfBgYNtKIW4Oi0Ny9kfytpk",
+            authDomain: "health-e0654.firebaseapp.com",
+            projectId: "health-e0654",
+            storageBucket: "health-e0654.firebasestorage.app",
+            messagingSenderId: "57749409299",
+            appId: "1:57749409299:web:e11011957164eff83d39e6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        function notify(text) {
+            const msg = document.getElementById('custom-message');
+            if (msg) {
+                msg.innerText = text;
+                msg.classList.remove('hidden');
+                setTimeout(() => msg.classList.add('hidden'), 2500);
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            const navAuth = document.getElementById('nav-auth');
+            const profileCard = document.getElementById('user-profile-card');
+            const welcomeMsg = document.getElementById('welcome-msg');
+            const previewImg = document.getElementById('profile-preview');
+
+            if (user) {
+                if (navAuth) navAuth.innerText = "登出 (" + (user.displayName || "使用者") + ")";
+                if (profileCard) profileCard.classList.remove('hidden');
+                if (welcomeMsg) welcomeMsg.innerText = `✨ 溫柔的空間已開啟，歡迎您 ${user.displayName || ''}`;
+
+                try {
+                    const userDocRef = doc(db, "users", user.uid);
+                    const docSnap = await getDoc(userDocRef);
+                    if (docSnap.exists() && docSnap.data().photoBase64) {
+                        if (previewImg) {
+                            previewImg.src = docSnap.data().photoBase64;
+                            previewImg.style.display = "block";
+                        }
+                    } else {
+                        if (previewImg && user.photoURL) {
+                            previewImg.src = user.photoURL;
+                            previewImg.style.display = "block";
+                        }
+                    }
+                } catch (error) {
+                    console.error("讀取 Firestore 失敗:", error);
+                }
+            } else {
+                if (navAuth) navAuth.innerText = "登入";
+                if (profileCard) profileCard.classList.add('hidden');
+                if (previewImg) previewImg.style.display = "none";
+            }
+        });
+
+        window.toggleAuth = async function () {
+            if (auth.currentUser) {
+                try {
+                    await signOut(auth);
+                    notify("已安全退出《Health+》溫柔陪伴空間");
+                } catch (error) {
+                    notify("登出時發生錯誤");
+                    console.error(error);
+                }
+            } else {
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    notify(`登入成功！歡迎 ${result.user.displayName}`);
+                } catch (error) {
+                    notify("Google 登入取消或失敗");
+                    console.error(error);
+                }
+            }
+        };
+
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        window.handleImageUpload = async function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) {
+                notify("為了流暢度，圖片大小請勿超過 1MB 喔！");
+                return;
+            }
+
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                notify("請先登入您的 Google 帳號");
+                return;
+            }
+
+            notify("正在轉換圖片並同步至雲端...");
+
+            try {
+                const base64String = await convertFileToBase64(file);
+                const userDocRef = doc(db, "users", currentUser.uid);
+                await setDoc(userDocRef, {
+                    uid: currentUser.uid,
+                    displayName: currentUser.displayName,
+                    email: currentUser.email,
+                    photoBase64: base64String,
+                    lastUpdated: new Date()
+                }, { merge: true });
+
+                const previewImg = document.getElementById('profile-preview');
+                if (previewImg) {
+                    previewImg.src = base64String;
+                    previewImg.style.display = "block";
+                }
+
+                notify("✨ 頭像已成功儲存至您的健康檔案！");
+            } catch (error) {
+                notify("圖片儲存失敗，請再試一次");
+                console.error("Base64 上傳錯誤:", error);
+            }
         };
     </script>
 </body>
