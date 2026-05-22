@@ -420,6 +420,155 @@
         .fade-in {
             animation: fadeIn 0.6s ease forwards;
         }
+
+        /* --- Info Icon & Modal --- */
+        .info-btn-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .info-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #e8e8e8;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            position: relative;
+            border: none;
+        }
+
+        .info-icon-btn:hover {
+            background-color: #d8d8d8;
+        }
+
+        .info-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            margin-bottom: 8px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 999;
+            border: 1px solid #ddd;
+        }
+
+        .info-icon-btn:hover .info-tooltip {
+            opacity: 1;
+        }
+
+        .info-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .info-modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .info-modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .info-modal-close:hover {
+            color: var(--text-main);
+        }
+
+        .info-modal h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: var(--green-main);
+            margin-bottom: 1rem;
+        }
+
+        .info-modal h4 {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            color: var(--green-dark);
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .info-modal p {
+            color: var(--text-main);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .info-modal ul {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 1rem;
+        }
+
+        .info-modal li {
+            color: var(--text-main);
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .info-modal li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--milk-tea);
+        }
+
+        .info-modal code {
+            background-color: var(--bg-main);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--milk-tea);
+        }
     </style>
 </head>
 
@@ -529,10 +678,21 @@
         <section id="view-calc" class="view hidden fade-in">
             <div class="card">
                 <h2 class="title-serif">BMI & TDEE 計算器</h2>
-                <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
-                    <button type="button" class="btn" id="btn-bmi-mode" onclick="setCalcMode('BMI')">BMI 計算</button>
-                    <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE
-                        計算器</button>
+                <div style="display: flex; gap: 15px; margin-bottom: 2rem; flex-wrap: wrap;">
+                    <div class="info-btn-container">
+                        <button type="button" class="btn" id="btn-bmi-mode" onclick="setCalcMode('BMI')">BMI 計算</button>
+                        <button type="button" class="info-icon-btn" onclick="showInfoModal('bmi')" title="BMI 詳細介紹">
+                            ?
+                            <span class="info-tooltip">BMI詳細介紹</span>
+                        </button>
+                    </div>
+                    <div class="info-btn-container">
+                        <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE 計算器</button>
+                        <button type="button" class="info-icon-btn" onclick="showInfoModal('tdee')" title="TDEE 詳細介紹">
+                            ?
+                            <span class="info-tooltip">TDEE詳細介紹</span>
+                        </button>
+                    </div>
                 </div>
                 <form id="calc-inputs" onsubmit="event.preventDefault(); calculate();">
                     <div style="margin-bottom: 1.5rem;">
@@ -718,6 +878,14 @@
         </section>
     </main>
 
+    <!-- Info Modal -->
+    <div id="info-modal-overlay" class="info-modal-overlay">
+        <div class="info-modal">
+            <button class="info-modal-close" onclick="closeInfoModal()">✕</button>
+            <div id="info-modal-content"></div>
+        </div>
+    </div>
+
     <footer>
         <p>Health+ 健康加分站 · 安靜、柔和、無壓力的陪伴</p>
     </footer>
@@ -884,6 +1052,85 @@
 
 
         // --- BMI / TDEE Logic ---
+        const infoContents = {
+            bmi: `
+                <h3>什麼是 BMI？</h3>
+                <p>BMI（身體質量指數）是一種簡單判斷「體重是否與身高相符」的方法，幫助我們了解身體目前的大致健康狀態。</p>
+                
+                <h4>把 BMI 想像成一個「身體比例指標」</h4>
+                <ul>
+                    <li>體重相對身高太低，可能代表過瘦、營養不足</li>
+                    <li>體重相對身高太高，可能增加身體負擔</li>
+                    <li>落在適當範圍，通常代表體重較符合健康標準</li>
+                </ul>
+                
+                <h4>BMI 的計算方式</h4>
+                <p>BMI = 體重(kg) ÷ 身高(m)²</p>
+                <p><strong>例如：</strong>體重 60 公斤，身高 1.65 公尺</p>
+                <p>BMI = 60 ÷ (1.65 × 1.65) ≈ 22</p>
+                
+                <h4>BMI 的限制</h4>
+                <p>BMI 是「參考指標」，不是絕對標準。它無法分辨肌肉量、體脂肪比例、骨架大小和運動習慣。</p>
+                <p>例如，運動員肌肉很多，BMI 可能偏高，但身體其實很健康。</p>
+                <p>所以 BMI 比較適合作為「初步了解身體狀況的工具」，而不是單靠它判定健康與否。</p>
+            `,
+            tdee: `
+                <h3>什麼是 TDEE？</h3>
+                <p>TDEE（總每日能量消耗）是指：你一天總共會消耗多少熱量。</p>
+                <p>就是你的身體每天「需要多少能量才能正常運作」。</p>
+                
+                <h4>這些消耗包含什麼</h4>
+                <ul>
+                    <li>呼吸與心跳</li>
+                    <li>消化食物</li>
+                    <li>日常活動（走路、上班上課）</li>
+                    <li>運動與其他活動量</li>
+                </ul>
+                <p>就算一整天躺著不動，身體其實也還是在持續消耗熱量。</p>
+
+                <h4>TDEE 是怎麼算的</h4>
+                <p>根據性別、年齡、身高、體重計算出基礎代謝率（BMR），再依照你的活動量去調整。</p>
+                <p>例如：久坐上班的人消耗會較低；常運動或勞力工作的人消耗會較高。</p>
+                <p>所以即使兩個人身高體重相同，TDEE 也可能完全不同。</p>
+
+                <h4>為什麼 TDEE 很重要</h4>
+                <p>它可以幫助你了解：一天大約該吃多少、想減肥時要控制多少熱量、想增肌時需要增加多少攝取、如何維持目前體重。</p>
+                
+                <h4>熱量平衡的概念</h4>
+                <ul>
+                    <li>吃進去 = 消耗掉 → 體重維持</li>
+                    <li>吃進去 < 消耗掉 → 可能減重</li>
+                    <li>吃進去 > 消耗掉 → 可能增重</li>
+                </ul>
+                
+                
+            `
+        };
+
+        function showInfoModal(type) {
+            const overlay = document.getElementById('info-modal-overlay');
+            const content = document.getElementById('info-modal-content');
+            content.innerHTML = infoContents[type] || '';
+            overlay.classList.add('active');
+        }
+
+        function closeInfoModal() {
+            const overlay = document.getElementById('info-modal-overlay');
+            overlay.classList.remove('active');
+        }
+
+        // 點擊 overlay 外面關閉 modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('info-modal-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) {
+                        closeInfoModal();
+                    }
+                });
+            }
+        });
+
         function setCalcMode(mode) {
             document.getElementById('btn-bmi-mode').classList.toggle('btn-outline', mode !== 'BMI');
             document.getElementById('btn-tdee-mode').classList.toggle('btn-outline', mode !== 'TDEE');
