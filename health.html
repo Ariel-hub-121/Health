@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2AlPLTKLwMKrDL2Rg64N8a-1D0afv-Pg&libraries=places"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA2AlPLTKLwMKrDL2Rg64N8a-1D0afv-Pg&libraries=places,geometry"></script>
     
     <style>
         :root {
@@ -151,7 +151,7 @@
         /* --- Home --- */
         .hero {
             text-align: center;
-            padding: 4rem 1rem;
+            padding: 3rem 1rem 2rem;
         }
 
         .hero h1 {
@@ -167,11 +167,40 @@
             margin-bottom: 2.5rem;
         }
 
+        /* 每日健康語錄樣式 */
+        .daily-quote-box {
+            background: linear-gradient(135deg, #F1EFEA, #EAE5DD);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: inset 0 2px 10px rgba(255,255,255,0.5);
+            border: 1px solid #E2DCD2;
+        }
+
+        .daily-quote-box p {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .daily-quote-box span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--green-main);
+            margin-bottom: 8px;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        /* --- 修正後的卡片網格系統 (3/2 排列) --- */
         .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* 讓不足三個的排置中 */
             gap: 1.5rem;
-            margin-top: 2rem;
         }
 
         .feature-item {
@@ -182,6 +211,11 @@
             cursor: pointer;
             border: 1px solid var(--khaki-light);
             transition: all 0.3s ease;
+            
+            /* 設定每張卡片寬度約 33%，確保一行剛好放三個 */
+            width: calc(33.333% - 1rem); 
+            min-width: 220px; 
+            max-width: 300px;
         }
 
         .feature-item:hover {
@@ -194,7 +228,7 @@
             margin-bottom: 1rem;
         }
 
-        /* --- Map Features --- */
+        /* --- Map Features (包含懸停放大) --- */
         .place-item {
             background: var(--bg-main);
             padding: 1rem;
@@ -203,7 +237,7 @@
             border: 1px solid var(--khaki-light);
             transition: all 0.3s;
             text-align: left;
-            cursor: pointer; /* 變更游標為手指形狀，提示可點擊 */
+            cursor: pointer;
         }
         .place-item:hover {
             border-color: var(--green-main);
@@ -215,138 +249,75 @@
             font-weight: 600;
             color: var(--text-main);
             margin-bottom: 5px;
+            font-size: 1.05rem;
+            transition: all 0.2s ease-in-out; /* 平滑過渡動畫 */
+        }
+        /* 卡片懸浮時字體放大 */
+        .place-item:hover .place-name {
+            font-size: 1.2rem; 
+            color: var(--green-dark);
         }
         .place-address {
             font-size: 0.85rem;
             color: var(--text-light);
         }
 
-        /* --- Calendar Logic --- */
-        .calendar-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-            margin-top: 1rem;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fdfdfd;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border: 1px solid #eee;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .calendar-day.is-today {
-            border: 2px solid var(--green-dark);
-            background-color: var(--khaki-light);
-            font-weight: 700;
-        }
-
-        .marker-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        /* --- Mood Grid --- */
-        .mood-pallette-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 1.5rem 0;
-        }
-
-        .mood-option-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: transform 0.2s, border-color 0.2s;
-            margin: 0 auto 8px;
-        }
-
-        .mood-option-wrapper {
-            text-align: center;
-            padding: 12px 5px;
+        /* --- Mailbox Features --- */
+        .mailbox-textarea {
+            width: 100%;
+            height: 180px;
+            padding: 1.5rem;
             border-radius: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            border: 1px solid var(--khaki-light);
+            background: var(--bg-main);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            color: var(--text-main);
+            resize: none;
+            outline: none;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s;
+        }
+        .mailbox-textarea:focus {
+            border-color: var(--green-main);
+            background: #fff;
+        }
+        .letter-reply {
+            background: #fcfbf9;
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--milk-tea);
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            white-space: pre-line;
+            line-height: 2;
         }
 
+        /* --- Calendar & Mood Grid Logic --- */
+        .calendar-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-top: 1rem; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; background: #fdfdfd; border-radius: 12px; cursor: pointer; font-size: 0.9rem; border: 1px solid #eee; position: relative; transition: all 0.2s; }
+        .calendar-day.is-today { border: 2px solid var(--green-dark); background-color: var(--khaki-light); font-weight: 700; }
+        .marker-dot { width: 14px; height: 14px; border-radius: 50%; position: absolute; bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .mood-pallette-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 1.5rem 0; }
+        .mood-option-circle { width: 60px; height: 60px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: transform 0.2s, border-color 0.2s; margin: 0 auto 8px; }
+        .mood-option-wrapper { text-align: center; padding: 12px 5px; border-radius: 16px; cursor: pointer; transition: background 0.2s; display: flex; flex-direction: column; align-items: center; }
         .mood-option-wrapper.selected { background-color: #f0f0f0; }
         .mood-option-wrapper.selected .mood-option-circle { border-color: var(--green-dark); transform: scale(1.1); }
-
-        .color-orange { background-color: var(--mood-happy); } 
-        .color-green { background-color: var(--mood-calm); }  
-        .color-blue { background-color: var(--mood-anxious); }   
-        .color-gray { background-color: var(--mood-tired); }   
-        .color-purple { background-color: var(--mood-sad); } 
-        .color-brown { background-color: var(--mood-angry); }  
-
-        /* --- Utils --- */
-        .icon-btn {
-            background: none; border: none; cursor: pointer; color: var(--text-light);
-            display: flex; align-items: center; justify-content: center;
-            padding: 5px; border-radius: 50%; transition: background 0.3s;
-        }
+        .color-orange { background-color: var(--mood-happy); } .color-green { background-color: var(--mood-calm); } .color-blue { background-color: var(--mood-anxious); } .color-gray { background-color: var(--mood-tired); } .color-purple { background-color: var(--mood-sad); } .color-brown { background-color: var(--mood-angry); }  
+        
+        .icon-btn { background: none; border: none; cursor: pointer; color: var(--text-light); display: flex; align-items: center; justify-content: center; padding: 5px; border-radius: 50%; transition: background 0.3s; }
         .icon-btn:hover { background: var(--khaki-light); color: var(--green-dark); }
-
         footer { text-align: center; padding: 3rem; color: var(--text-light); font-size: 0.8rem; }
 
-        /* Quiz Specific UI */
-        .quiz-option {
-            background-color: var(--bg-main);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-        }
+        .quiz-option { background-color: var(--bg-main); padding: 1rem; border-radius: 12px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; }
         .quiz-option:hover { transform: translateX(5px); background: #fff; border: 1px solid var(--green-main); }
         .quiz-option .prefix { font-family: var(--font-serif); color: var(--milk-tea); font-weight: 600; margin-right: 15px; width: 20px; }
 
-        /* Message Box */
-        #custom-message {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-main);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 30px;
-            z-index: 1000;
-            font-size: 0.9rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        #custom-message { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 10px 25px; border-radius: 30px; z-index: 1000; font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.6s ease forwards; }
     </style>
 </head>
@@ -364,9 +335,8 @@
                 <li><a onclick="switchView('calc')" id="nav-calc">計算器</a></li>
                 <li><a onclick="switchView('quiz')" id="nav-quiz">健康測驗</a></li>
                 <li><a onclick="switchView('mood')" id="nav-mood">情緒牆</a></li>
-                <li><a onclick="switchView('map')" id="nav-map">健康神隊友</a></li>
-                <li><a>關於我們</a></li>
-                <li><a>登入</a></li>
+                <li><a onclick="switchView('map')" id="nav-map">神隊友</a></li>
+                <li><a onclick="switchView('mailbox')" id="nav-mailbox">樹洞信箱</a></li>
             </ul>
         </nav>
     </header>
@@ -378,6 +348,12 @@
                 <p>「溫柔照顧你的身體，也照顧你的情緒。」</p>
                 <button class="btn" onclick="switchView('quiz')">開始健康旅程</button>
             </div>
+            
+            <div class="daily-quote-box" id="daily-quote-container">
+                <span id="quote-time-label">⛅ 每日療癒語錄</span>
+                <p id="quote-text">載入中...</p>
+            </div>
+
             <div class="feature-grid">
                 <div class="feature-item" onclick="switchView('calc')">
                     <i data-lucide="calculator" class="feature-icon"></i>
@@ -399,7 +375,47 @@
                     <h3>健康神隊友</h3>
                     <p>尋找附近的運動角落</p>
                 </div>
+                <div class="feature-item" onclick="switchView('mailbox')">
+                    <i data-lucide="mail" class="feature-icon"></i>
+                    <h3>樹洞解憂信箱</h3>
+                    <p>寫封信，AI 溫柔傾聽</p>
+                </div>
             </div>
+        </section>
+
+        <section id="view-mailbox" class="view hidden fade-in">
+            <div class="card">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="color: var(--milk-tea); font-weight: 500; font-size: 0.8rem; letter-spacing: 0.2em; margin-bottom: 10px;">TREE HOLE</div>
+                    <h2 class="title-serif" style="font-size: 2rem;">解憂樹洞信箱</h2>
+                    <p style="color: var(--text-light);">無論今天發生了什麼，好的壞的，都可以在這裡寫下來。<br>投入信箱後，稍等片刻，會收到一封專屬於你的回信。</p>
+                </div>
+                
+                <div id="mailbox-write-area">
+                    <textarea id="mailbox-input" class="mailbox-textarea" placeholder="親愛的樹洞，我今天想說的是..."></textarea>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 1rem;">
+                        <button class="btn btn-outline" onclick="switchView('home')">返回首頁</button>
+                        <button class="btn" onclick="sendLetter()" id="btn-send-letter">
+                            <i data-lucide="send"></i> 寄出信件
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mailbox-loading" class="hidden" style="text-align: center; padding: 3rem 0;">
+                    <i data-lucide="loader" style="color: var(--milk-tea); animation: spin 2s linear infinite; margin-bottom: 1rem; width: 32px; height: 32px;"></i>
+                    <p style="color: var(--text-light);">信件已經輕輕投遞... AI 正在為您撰寫回信中...</p>
+                </div>
+
+                <div id="mailbox-result-area" class="hidden">
+                    <h3 class="title-serif" style="font-size: 1.2rem; color: var(--green-dark);">來自樹洞的回信 💌</h3>
+                    <div class="letter-reply" id="mailbox-reply-text"></div>
+                    <div style="margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn btn-outline" onclick="switchView('home')">返回首頁</button>
+                        <button class="btn" onclick="resetMailbox()">再寫一封信</button>
+                    </div>
+                </div>
+            </div>
+            <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
         </section>
 
         <section id="view-map" class="view hidden fade-in">
@@ -428,6 +444,10 @@
                             <p style="color: var(--text-light); grid-column: 1 / -1; text-align: center; padding: 2rem 0;">目前尚未載入地點資料</p>
                         </div>
                     </div>
+                </div>
+
+                <div style="margin-top: 3rem; display: flex; justify-content: center;">
+                    <button class="btn btn-outline" onclick="switchView('home')">返回首頁</button>
                 </div>
             </div>
         </section>
@@ -473,12 +493,18 @@
                     </div>
                     <button type="submit" class="btn" style="width: 100%;">立即計算</button>
                 </form>
+                
                 <div id="calc-result" class="hidden" style="margin-top: 2rem; background: var(--bg-main); padding: 1.8rem; border-radius: 20px;">
                     <h3 id="res-title" class="title-serif">計算結果</h3>
                     <p id="res-val" style="font-size: 2.2rem; font-weight: 700; color: var(--green-main); margin: 10px 0;"></p>
                     <p id="res-status" style="font-weight: 600; margin-bottom: 5px;"></p>
                     <p id="res-ideal" style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 15px;"></p>
                     <div id="res-advice" style="font-size: 0.95rem; color: var(--text-main); white-space: pre-line; line-height: 1.7;"></div>
+                    
+                    <div style="margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+                        <button type="button" class="btn btn-outline" onclick="switchView('home')">返回首頁</button>
+                        <button type="button" class="btn" onclick="resetCalc()">重新計算</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -542,8 +568,10 @@
                 </div>
                 <div id="mood-calendar-view">
                     <div class="calendar-grid" id="calendar-mood-grid"></div>
-                    <div style="text-align: center; margin-top: 2rem;">
-                        <button class="btn btn-outline" onclick="switchMoodView('stats')">查看月度統計</button>
+                    
+                    <div style="text-align: center; margin-top: 2rem; display: flex; gap: 10px; justify-content: center;">
+                        <button class="btn btn-outline" onclick="switchView('home')">返回首頁</button>
+                        <button class="btn" onclick="switchMoodView('stats')">查看月度統計</button>
                     </div>
                 </div>
                 <div id="mood-stats-view" class="hidden">
@@ -610,23 +638,100 @@
             setTimeout(() => msg.classList.add('hidden'), 2500);
         }
 
-        // 切換視圖功能 (已包含 map 路由控制)
+        // --- 每日健康語錄 Logic ---
+        function updateDailyQuote() {
+            const hour = new Date().getHours();
+            let periodLabel = "";
+            let quotes = [];
+
+            if (hour >= 5 && hour < 12) {
+                periodLabel = "⛅ 早安，新的一天";
+                quotes = [
+                    "早晨的第一杯溫水，是給身體最溫柔的喚醒。",
+                    "深呼吸，感受早晨的空氣，今天也會是個好日子。",
+                    "不急著趕路，給自己五分鐘安靜地吃頓早餐吧。"
+                ];
+            } else if (hour >= 12 && hour < 18) {
+                periodLabel = "☀️ 午安，中場休息";
+                quotes = [
+                    "忙碌了一上午，站起來伸展一下，讓緊繃的肩膀放個假。",
+                    "好好吃頓午餐，專注於食物的滋味，這也是一種正念練習喔。",
+                    "累的時候，稍微閉上眼睛休息十分鐘，比起硬撐更有效率。"
+                ];
+            } else {
+                periodLabel = "🌙 晚安，沉澱時刻";
+                quotes = [
+                    "放下今天的疲憊與完美主義，感謝自己又平安度過了一天。",
+                    "夜晚是修復的時刻，把手機調暗，讓大腦準備進入溫柔的夢鄉。",
+                    "無論今天過得如何，你都已經做得很好了。好好休息吧。"
+                ];
+            }
+
+            document.getElementById('quote-time-label').innerText = periodLabel;
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote-text').innerText = randomQuote;
+        }
+
+        // 切換視圖功能
         function switchView(viewId) {
-            ['home', 'map', 'calc', 'quiz', 'mood'].forEach(v => {
+            ['home', 'map', 'calc', 'quiz', 'mood', 'mailbox'].forEach(v => {
                 document.getElementById('view-' + v).classList.add('hidden');
                 document.getElementById('nav-' + v)?.classList.remove('active');
             });
             document.getElementById('view-' + viewId).classList.remove('hidden');
             document.getElementById('nav-' + viewId)?.classList.add('active');
+            
             if(viewId === 'mood') renderMoodCalendar();
+            if(viewId === 'home') updateDailyQuote();
             window.scrollTo(0,0);
+        }
+
+        // --- Mailbox (AI 樹洞) Logic ---
+        function sendLetter() {
+            const text = document.getElementById('mailbox-input').value.trim();
+            if(!text) {
+                showMsg("信件還是空白的唷，寫點什麼吧。");
+                return;
+            }
+
+            document.getElementById('mailbox-write-area').classList.add('hidden');
+            document.getElementById('mailbox-loading').classList.remove('hidden');
+
+            setTimeout(() => {
+                generateAIResponse(text);
+            }, 2500);
+        }
+
+        function generateAIResponse(userText) {
+            const replyBox = document.getElementById('mailbox-reply-text');
+            let response = "";
+
+            if (userText.includes("累") || userText.includes("疲倦") || userText.includes("不想努力")) {
+                response = "輕輕展信，讀到了你的疲憊。\n\n心理學中有個概念叫做「自我枯竭（Ego Depletion）」，當我們不斷消耗意志力去應對生活，卻沒有足夠的時間補充時，大腦就會拉響警報，讓你感到深深的無力。\n\n我想告訴你，你的疲憊是真實的，這代表你已經很努力撐了一段時間。請給自己一個理直氣壯休息的理由，今晚什麼都別管，好好睡一覺吧。世界不會因為你休息一天而崩塌，但你會因為休息而重新找回自己。";
+            } else if (userText.includes("開心") || userText.includes("快樂") || userText.includes("好棒")) {
+                response = "看著你的文字，我也能感受到那份愉悅的震動！\n\n正向心理學認為，細細品味並記錄下美好的時刻（Savoring），能有效改變我們大腦的神經迴路，提升長期的幸福感。你願意把這份快樂寫下來，就是一個非常棒的練習。\n\n把這個開心的瞬間存在心裡的抽屜吧，未來如果遇到陰天時，打開抽屜，它會是你最棒的陽光。";
+            } else if (userText.includes("煩") || userText.includes("生氣") || userText.includes("焦慮") || userText.includes("壓力")) {
+                response = "收到你的信了。感覺到你現在的心裡像是被揉成一團的毛線，充滿了壓力與焦慮。\n\n當情緒來襲時，我們的杏仁核會過度活化。試著做三個深深的深呼吸，把注意力拉回當下的身體感受。情緒就像天氣，有時狂風暴雨，但它總會過去。\n\n你不必急著把毛線解開，允許自己現在就是心煩的。我會在這裡靜靜地陪著你，等你準備好，我們再來慢慢梳理。";
+            } else {
+                response = "輕輕地展信，讀到了你的心聲。\n\n無論你今天經歷了什麼，好的或壞的，我都全盤接收了。在心理治療中，被「無條件地傾聽與接納」是療癒的開端。你可以把這裡當作一個絕對安全的空間，沒有評價，只有陪伴。\n\n如果覺得需要，隨時再來寫信給我。祝福你今晚有個平靜安穩的夜晚。";
+            }
+
+            replyBox.innerText = response;
+            document.getElementById('mailbox-loading').classList.add('hidden');
+            document.getElementById('mailbox-result-area').classList.remove('hidden');
+        }
+
+        function resetMailbox() {
+            document.getElementById('mailbox-input').value = "";
+            document.getElementById('mailbox-result-area').classList.add('hidden');
+            document.getElementById('mailbox-write-area').classList.remove('hidden');
         }
 
         // --- Google Maps / 健康神隊友 Logic ---
         let map;
         let mapService;
+        let currentUserLocation = null;
 
-        // 初始化定位與地圖
         function initMapWithLocation() {
             if (navigator.geolocation) {
                 showMsg("正在為您尋找座標，請稍候...");
@@ -649,13 +754,13 @@
             }
         }
 
-        // 繪製地圖並發送 Places 搜尋請求
         function displayMapAndPlaces(location) {
             document.getElementById('map-placeholder').style.display = 'none';
             const mapElement = document.getElementById('map');
             mapElement.style.display = 'block';
 
-            // 建立地圖實例
+            currentUserLocation = new google.maps.LatLng(location.lat, location.lng);
+
             map = new google.maps.Map(mapElement, {
                 center: location,
                 zoom: 14,
@@ -669,7 +774,6 @@
                 ]
             });
 
-            // 標示使用者目前的位置
             new google.maps.Marker({
                 position: location,
                 map: map,
@@ -677,7 +781,6 @@
                 title: "您目前的位置"
             });
 
-            // 設定搜尋條件
             const request = {
                 location: location,
                 radius: '2500', 
@@ -688,7 +791,6 @@
             mapService.nearbySearch(request, handlePlacesResults);
         }
 
-        // 處理 Places API 回傳的搜尋結果
         function handlePlacesResults(results, status) {
             const listContainer = document.getElementById("places-list");
             listContainer.innerHTML = ""; 
@@ -697,14 +799,13 @@
                 showMsg(`為您找到了 ${results.length} 個運動場所！`);
                 for (let i = 0; i < results.length; i++) {
                     createMapMarker(results[i]);
-                    appendPlaceCard(results[i], listContainer);
+                    appendPlaceCard(results[i], listContainer, currentUserLocation);
                 }
             } else {
                 listContainer.innerHTML = "<p style='color: var(--text-light); grid-column: 1 / -1; text-align: center; padding: 2rem 0;'>附近暫時找不到相關運動場所，或許可以從簡單的居家伸展開始喔！</p>";
             }
         }
 
-        // 幫搜尋到的每個地點標上地圖大頭針
         function createMapMarker(place) {
             if (!place.geometry || !place.geometry.location) return;
             new google.maps.Marker({
@@ -714,25 +815,33 @@
             });
         }
 
-        // 將地點資訊繪製成列表卡片
-        function appendPlaceCard(place, container) {
+        function appendPlaceCard(place, container, userLoc) {
             const div = document.createElement('div');
             div.className = 'place-item';
             
-            // 新增功能：點擊整張卡片直接跳轉至 Google 地圖商家頁面
             div.onclick = () => {
                 if (place.place_id) {
-                    // 利用 Google Maps 官方的 URL 規範，代入店名與 Place ID 進行導向
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}&query_place_id=${place.place_id}`;
-                    window.open(mapsUrl, '_blank'); // 開啟新分頁
+                    window.open(mapsUrl, '_blank');
                 }
             };
             
-            // 處理營業狀態（若有提供資料）
             let openStatusHtml = '';
             if (place.opening_hours) {
-                const isOpen = place.opening_hours.isOpen();
-                openStatusHtml = `<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; background: ${isOpen ? '#d5dfd1' : '#f0f0f0'}; color: ${isOpen ? 'var(--green-dark)' : 'var(--text-light)'}; margin-left: 8px;">${isOpen ? '營業中' : '休息中'}</span>`;
+                const isOpen = typeof place.opening_hours.isOpen === 'function' ? place.opening_hours.isOpen() : place.opening_hours.open_now;
+                if (isOpen !== undefined) {
+                    openStatusHtml = `<span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; background: ${isOpen ? '#d5dfd1' : '#f0f0f0'}; color: ${isOpen ? 'var(--green-dark)' : 'var(--text-light)'}; margin-left: 8px;">${isOpen ? '營業中' : '休息中'}</span>`;
+                }
+            }
+
+            let distanceStr = '未知';
+            if (userLoc && place.geometry && place.geometry.location) {
+                const distanceMeters = google.maps.geometry.spherical.computeDistanceBetween(userLoc, place.geometry.location);
+                if (distanceMeters < 1000) {
+                    distanceStr = Math.round(distanceMeters) + ' 公尺';
+                } else {
+                    distanceStr = (distanceMeters / 1000).toFixed(1) + ' 公里';
+                }
             }
 
             const ratingStar = place.rating ? place.rating : '無';
@@ -747,12 +856,14 @@
                     <i data-lucide="map-pin" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"></i> 
                     ${place.vicinity || '無地址資訊'}
                 </div>
-                <div style="font-size: 0.85rem; color: var(--milk-tea); margin-top: 8px; font-weight: 500;">
-                    ⭐ ${ratingStar} (${userRatings})
+                <div style="font-size: 0.85rem; color: var(--milk-tea); margin-top: 8px; font-weight: 500; display: flex; justify-content: space-between;">
+                    <span>⭐ ${ratingStar} (${userRatings})</span>
+                    <span style="color: var(--green-main);">
+                        <i data-lucide="navigation" style="width: 14px; height: 14px; vertical-align: middle;"></i> 距離約 ${distanceStr}
+                    </span>
                 </div>
             `;
             container.appendChild(div);
-            // 重新觸發 lucide 渲染動態產生的圖標
             lucide.createIcons({ root: div });
         }
 
@@ -789,7 +900,6 @@
             resBox.classList.remove('hidden');
 
             if(!isTDEE) {
-                // --- BMI Mode ---
                 const bmi = (w / ((h/100)**2)).toFixed(1);
                 const idealLow = (18.5 * (h/100)**2).toFixed(1);
                 const idealHigh = (24 * (h/100)**2).toFixed(1);
@@ -800,12 +910,11 @@
                 resIdeal.innerText = `理想體重參考：${idealLow} ~ ${idealHigh} kg`;
 
                 let advice = "";
-                if(bmi < 18.5) advice = "目前的數值顯示您的體重偏輕。這可能代表身體的抵抗力較弱或肌肉量不足。建議您在日常飲食中適度增加優質蛋白質與健康油脂的釋取，並搭配負重運動來提升代謝與肌肉質量，溫柔地為身體補充能量。";
+                if(bmi < 18.5) advice = "目前的數值顯示您的體重偏輕。這可能代表身體的抵抗力較弱或肌肉量不足。建議您在日常飲食中適度增加優質蛋白質與健康油脂的攝取，並搭配負重運動來提升代謝與肌肉質量，溫柔地為身體補充能量。";
                 else if(bmi < 24) advice = "恭喜您！您的體態目前維持在非常標準且健康的區間。這顯示您目前具備良好的生活節奏與均衡的飲食習慣。請繼續保持這份輕盈的活力，這份身心的平衡將是您維持長期健康最強大的資產。";
                 else advice = "目前的數值略微偏高，這是一段溫柔提醒您需要微調生活方式的訊號。建議可以嘗試從減少精緻糖分開始，並在每天規律增加行走時間，讓身體逐漸恢復彈性。健康是一段調整的過程，請保持耐心與信心。";
                 resAdvice.innerText = advice;
             } else {
-                // --- TDEE Mode ---
                 let bmr;
                 if (gender === 'male') {
                     bmr = (10 * w) + (6.25 * h) - (5 * age) + 5;
@@ -829,20 +938,26 @@
                 } else if (act <= 1.375) {
                     actAdvice = "您已經有了初步的活動習慣，這對心血管健康很有幫助。建議進一步固定每週 150 分鐘的中強度運動（如快走），並加入基礎肌力訓練（如深蹲或撐體），能幫助您建構肌肉，提高不運動時的能量消耗。";
                 } else {
-                    actAdvice = "您的活動量非常理想，身體正處於高代謝狀態。此時需特別注意運動後的營養補充，釋取適量澱粉與優質蛋白以加速修復。若感到疲勞感持續，應適度增加伸展與充足睡眠，避免過度訓練導致壓力皮質醇上升。";
+                    actAdvice = "您的活動量非常理想，身體正處於高代謝狀態。此時需特別注意運動後的營養補充，攝取適量澱粉與優質蛋白以加速修復。若感到疲勞感持續，應適度增加伸展與充足睡眠，避免過度訓練導致壓力皮質醇上升。";
                 }
 
                 let physicalAdvice = "";
                 if (bmiStatus === "過輕") {
-                    physicalAdvice = "\n\n飲食方面，建議適度增加複合式碳水與優質蛋白質釋取，採取少量多餐的方式，並專注於肌力訓練來提升肌肉量而非單純脂肪，這能讓您的體態更健康飽滿。";
+                    physicalAdvice = "\n\n飲食方面，建議適度增加複合式碳水與優質蛋白質攝取，採取少量多餐的方式，並專注於肌力訓練來提升肌肉量而非單純脂肪，這能讓您的體態更健康飽滿。";
                 } else if (bmiStatus === "過重" || bmiStatus === "肥胖") {
-                    physicalAdvice = "\n\n建議採取穩定的熱量赤字，並以「原型食物」為主，每餐確保有手掌大小的蛋白質與兩份深色蔬菜。減少精緻糖分的釋取，能穩定血糖水平，避免脂肪在腹部堆積。";
+                    physicalAdvice = "\n\n建議採取穩定的熱量赤字，並以「原型食物」為主，每餐確保有手掌大小的蛋白質與兩份深色蔬菜。減少精緻糖分的攝取，能穩定血糖水平，避免脂肪在腹部堆積。";
                 } else {
-                    physicalAdvice = "\n\n目前狀態良好，建議維持目前的均衡比例。保持每日體重乘上 30cc 的水分釋取，這對於維持代謝效能與皮膚彈性至關重要。";
+                    physicalAdvice = "\n\n目前狀態良好，建議維持目前的均衡比例。保持每日體重乘上 30cc 的水分攝取，這對於維持代謝效能與皮膚彈性至關重要。";
                 }
 
                 resAdvice.innerText = intro + actAdvice + physicalAdvice;
             }
+        }
+        
+        function resetCalc() {
+            document.getElementById('calc-inputs').reset();
+            document.getElementById('calc-result').classList.add('hidden');
+            window.scrollTo(0,0);
         }
 
         // --- Quiz Logic ---
@@ -985,7 +1100,7 @@
                 orange: { n: "開心", f: `看見你最近的心情充滿了明亮的橙色，這真是一件值得慶祝的事。正向心理學中的「拓展與建構理論」告訴我們，喜悅的情緒能幫助我們開闊思維，讓我們更有創造力去面對生活。這份快樂不僅僅是當下的滿足，它更是在為你的心理韌性積蓄能量。請好好珍惜這份能量，你可以試著將這些開心的瞬間寫成日記，或與身邊的人分享這份溫度的來源。這不僅能讓快樂在當下加倍，還能在未來遇到低潮時，成為你心中最強大的支撐力量。繼續保持這份對生活的熱愛，讓幸福的頻率自然地延續下去，你的光芒也會感染身邊的人。`, a: `延續這份愉快的能量，將當下的幸福感轉化為日常儀式感的一部分。` },
                 green: { n: "平靜", f: `最近的你展現出一種如森林般靜謐的穩定感，這在忙碌的現代生活中是非常難得的靈魂狀態。平靜並非代表停滯不前，而是一種內在的平衡與深度修復。這是一個非常適合進行深度閱讀、冥想或簡單與內心誠實對話的契機。在這種狀態下，你的直覺往往最為敏銳，能看清平時被喧囂掩蓋的細節。不需要刻意追求外在的改變，順應當下的節奏即可。讓身體與心靈在這種寧靜中獲得徹底的滋養與充電，這將為你下一次的出發積蓄溫柔且堅定的力量。這份安定的力量是你最寶貴的資產。`, a: `利用這個寧靜的時刻，進行深度自我覺察與情緒整理。` },
                 blue: { n: "焦慮", f: `感覺到焦慮的迷霧正在困擾著你嗎？請記得，焦慮本質上是身體在試圖保護你，提醒你面對未知時的謹慎。試著練習「5-4-3-2-1 感官著陸法」：找出身邊 5 個能看到的、4 個能觸摸的、3 個能聽到的、2 個能聞到的與 1 個能嚐到的事物。這能幫助你的思緒從未來的失控想像中回到踏實的現在。焦慮不需要被排斥，而是需要被溫柔地看見與安撫。把龐大的任務拆成最小的步驟，一次只做一件最簡單的小事，你會發現那些讓你窒息的壓力正一點點消散，而你其實一直都有應對的能力。`, a: `練習「5-4-3-2-1 感官著陸法」，讓思緒回到現在。` },
-                gray: { n: "疲憊", f: `那種揮之不去的疲憊感，是身體在向你發出的溫柔提醒，告訴你它需要真正的關機。現代人的疲勞往往不著於體力消耗，更多是資訊過載導致的心理枯竭。建議你今天給自己一段完全的「數位斷網時間」，遠離手機與所有螢幕，嘗試進行簡單的深呼吸或聽聽白噪音。哪怕只是閉上眼安靜坐著十五分鐘，不帶任何目的，也能讓神經系統得到喘息。請不要責怪自己現在的低效率，充足的休息是為了更高質量的進步，今晚請務必比平時早點入睡，讓生理節律重新找回律動感。`, a: `給自己一段不帶目的的數位斷網時間，讓身心真正休息。` },
+                gray: { n: "疲憊", f: `那種揮之不去的疲憊感，是身體在向你發出的溫柔提醒，告訴你它需要真正的關機。現代人的疲勞往往不只著於體力消耗，更多是資訊過載導致的心理枯竭。建議你今天給自己一段完全的「數位斷網時間」，遠離手機與所有螢幕，嘗試進行簡單的深呼吸或聽聽白噪音。哪怕只是閉上眼安靜坐著十五分鐘，不帶任何目的，也能讓神經系統得到喘息。請不要責怪自己現在的低效率，充足的休息是為了更高質量的進步，今晚請務必比平時早點入睡，讓生理節律重新找回律動感。`, a: `給自己一段不帶目的的數位斷網時間，讓身心真正休息。` },
                 purple: { n: "難過", f: `當悲傷的紫意襲來，請允許自己停下來，給情緒一個流動的出口。悲傷是心靈在進行一場漫長的告別或療癒過程，壓抑它只會讓負擔更重。你可以試著流淚，或是在安靜的角落擁抱一下脆弱的自己。心理學認為，完全接納情緒是療癒的開端。你可以聽一些溫柔的慢節奏音樂，或是把難受的感覺寫在紙上隨後撕掉。請相信，現在的沈重只是暫時的雲層，陽光依然存在於雲端之後，只是暫時被遮擋了。不需要急著變好，溫柔地對待自己，就是你目前最重要且最勇敢的一件事。`, a: `允許自己感受悲傷，給情緒一個溫柔的出口。` },
                 brown: { n: "生氣", f: `憤怒像是一把雙面刃，它反映出你內在的底線受到了侵犯，或是某個深層需求未被滿足。在憤怒的當下，請給自己一個「生理緩衝期」，深呼吸十次，暫時離開讓你感到衝突的環境。試著分析憤怒背後藏著的是什麼？是失望、恐懼還是受挫感？當你學會解讀憤怒背後的語言，你就能更有力量地去溝通與解決核心問題。運動或是書寫極佳的發洩管道，能將這股強烈的情緒轉化為實質的改變動力。請記住，你可以生氣，但不要讓生氣控制了你的行為，冷靜後的你更有智慧。`, a: `先給自己冷靜時間，然後試著解讀憤怒背後的真正需求。` }
             };
@@ -1005,7 +1120,11 @@
             adviceBox.innerText = finalAdvice;
         }
 
-        window.onload = () => { lucide.createIcons(); switchView('home'); };
+        // 初始化頁面時載入圖標、首頁與當下語錄
+        window.onload = () => { 
+            lucide.createIcons(); 
+            switchView('home'); 
+        };
     </script>
 </body>
 </html>
