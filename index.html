@@ -12,15 +12,15 @@
 
     <style>
         :root {
-            --bg-main: #F7F5F2;
+            --bg-main: #F4F4F0;
             --bg-card: #FFFFFF;
             --green-main: #8F9E8B;
             --green-dark: #5F6B5A;
             --milk-tea: #C6A995;
             --mist-blue: #8E98A2;
             --khaki-light: #EAE5DD;
-            --text-main: #4A525A;
-            --text-light: #7D858D;
+            --text-main: #4A5553;
+            --text-light: #8A9693;
             --shadow: rgba(120, 120, 120, 0.08);
             --font-serif: 'Noto Serif TC', serif;
             --font-sans: 'Noto Sans TC', sans-serif;
@@ -181,6 +181,276 @@
         .mood-option-wrapper.selected .mood-option-circle {
             border-color: var(--green-dark);
             transform: scale(1.1);
+        }
+
+        .record-box {
+            border: 1px solid rgba(143,158,139,0.18);
+            background: rgba(247,245,242,0.9);
+            border-radius: 24px;
+            padding: 1rem 1.1rem;
+            margin-top: 1.2rem;
+        }
+
+        .record-box h4 {
+            margin: 0 0 0.9rem;
+            font-size: 1rem;
+            color: var(--green-dark);
+        }
+
+        .record-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+        }
+
+        .record-pill {
+            padding: 0.7rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(143,158,139,0.3);
+            background: #fff;
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .record-pill.selected {
+            background: var(--green-main);
+            color: white;
+            border-color: rgba(95,107,90,0.5);
+        }
+
+        .water-calc-line {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.85rem;
+        }
+
+        .water-calc-input {
+            flex: 1;
+            min-width: 160px;
+            padding: 0.78rem 0.95rem;
+            border-radius: 16px;
+            border: 1px solid var(--khaki-light);
+            background: var(--bg-main);
+            outline: none;
+            color: var(--text-main);
+        }
+
+        .btn-small {
+            padding: 0.75rem 1rem;
+            border-radius: 999px;
+            font-size: 0.92rem;
+            background: transparent;
+            border: 1px solid var(--green-main);
+            color: var(--green-main);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-small:hover {
+            background: rgba(143,158,139,0.12);
+        }
+
+        .record-note {
+            font-size: 0.88rem;
+            color: rgba(74,82,90,0.6);
+            margin-top: 0.6rem;
+            line-height: 1.6;
+        }
+
+        .record-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.92rem;
+            color: var(--text-light);
+        }
+
+        .record-table th,
+        .record-table td {
+            padding: 0.75rem 0.6rem;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            text-align: left;
+        }
+
+        .record-table th {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .record-table td {
+            color: var(--text-light);
+        }
+
+        .water-calc-result {
+            margin-top: 0.9rem;
+            padding: 0.95rem 1rem;
+            border-radius: 18px;
+            background: rgba(247,245,242,0.9);
+            border: 1px solid rgba(143,158,139,0.14);
+            color: var(--text-main);
+            white-space: pre-line;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .water-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 2500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .water-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .water-modal {
+            width: min(520px, 100%);
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .water-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            border: none;
+            background: rgba(74,82,90,0.08);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        .water-modal h3 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+            color: var(--green-dark);
+        }
+
+        .water-modal p {
+            margin: 0;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+
+        .water-form {
+            margin-top: 1rem;
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .water-form label {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .water-form input {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid var(--khaki-light);
+            background: var(--bg-main);
+            outline: none;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .water-form button {
+            width: 100%;
+            padding: 0.95rem 1rem;
+            border-radius: 999px;
+            border: none;
+            background: var(--green-main);
+            color: white;
+            font-size: 0.98rem;
+            cursor: pointer;
+        }
+
+        .water-form button:hover {
+            background: var(--green-dark);
+        }
+
+        .water-modal-note {
+            margin-top: 0.8rem;
+            color: rgba(74,82,90,0.7);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .water-modal-result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 18px;
+            background: rgba(143,158,139,0.08);
+            color: var(--text-main);
+            white-space: pre-line;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .calendar-top-icon {
+            position: absolute;
+            top: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            padding: 2px 4px;
+            min-width: 26px;
+            height: auto;
+            font-size: 0.95rem;
+            line-height: 1;
+        }
+
+        .water-icon {
+            right: 2px;
+            font-size: 0.75rem;
+        }
+
+        /* --- 以下是新增的水滴集中與交疊效果 --- */
+        .water-group {
+            display: inline-flex;
+            align-items: center;
+        }
+        .water-group span {
+            position: relative;
+            display: inline-block;
+        }
+        /* 兩滴水的排版 (一高一低、斜向交疊) */
+        .water-2 .w1 { transform: translateY(2px); z-index: 1; }
+        .water-2 .w2 { transform: translateY(-2px); margin-left: -4px; z-index: 2; }
+        
+        /* 三滴水的排版 (中間最高、互相交疊) */
+        .water-3 .w1 { transform: translateY(2px); z-index: 1; }
+        .water-3 .w2 { transform: translateY(-4px); margin-left: -5px; z-index: 3; }
+        .water-3 .w3 { transform: translateY(2px); margin-left: -5px; z-index: 2; }
+        /* ----------------------------------- */
+
+        .exercise-icon {
+            left: 8px;
         }
 
         .color-orange {
@@ -476,6 +746,50 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.6s ease forwards; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ========================================== */
+        /* 手機版適應排版 (螢幕寬度小於 600px 時觸發) */
+        /* ========================================== */
+        @media (max-width: 600px) {
+            /* 1. 讓日期數字稍微變小，騰出空間 */
+            .calendar-day {
+                font-size: 0.75rem; 
+            }
+
+            /* 2. 縮小運動與喝水的整體圖示尺寸，並往邊緣靠攏 */
+            .calendar-top-icon {
+                font-size: 0.6rem !important; 
+                min-width: unset; 
+                padding: 0;
+                top: 2px; /* 貼緊上方邊緣 */
+            }
+
+            .exercise-icon {
+                left: 2px; /* 貼緊左方邊緣 */
+            }
+
+            .water-icon {
+                right: 2px; /* 貼緊右方邊緣 */
+            }
+
+            /* 3. 縮小下方的狀態圓點 */
+            .marker-dot {
+                width: 8px;
+                height: 8px;
+                bottom: 4px; /* 往下靠攏 */
+            }
+
+            /* 4. 微調剛剛設定的水滴交疊間距，避免在手機上縮成一團 */
+            .water-group span {
+                font-size: 0.55rem; /* 水滴變更小 */
+            }
+            .water-2 .w1 { transform: translateY(1px); }
+            .water-2 .w2 { transform: translateY(-1px); margin-left: -3px; }
+            
+            .water-3 .w1 { transform: translateY(1px); }
+            .water-3 .w2 { transform: translateY(-3px); margin-left: -4px; }
+            .water-3 .w3 { transform: translateY(1px); margin-left: -4px; }
+        }
     </style>
 </head>
 <body>
@@ -491,7 +805,7 @@
                 <li><a onclick="switchView('home')" id="nav-home" class="active">首頁</a></li>
                 <li><a onclick="switchView('calc')" id="nav-calc">計算器</a></li>
                 <li><a onclick="switchView('quiz')" id="nav-quiz">測驗</a></li>
-                <li><a onclick="switchView('mood')" id="nav-mood">情緒牆</a></li>
+                <li><a onclick="switchView('mood')" id="nav-mood">生活狀態牆</a></li>
                 <li><a onclick="switchView('map')" id="nav-map">神隊友</a></li>
                 <li><a onclick="switchView('mailbox')" id="nav-mailbox">樹洞信箱</a></li>
                 <li><a id="nav-auth" onclick="window.toggleAuth()">登入</a></li>
@@ -525,7 +839,7 @@
                 </div>
                 <div class="feature-item" onclick="switchView('mood')">
                     <i data-lucide="palette" class="feature-icon"></i>
-                    <h3>情緒顏色牆</h3>
+                    <h3>生活狀態牆</h3>
                     <p>用顏色紀錄每日心情</p>
                 </div>
                 <div class="feature-item" onclick="switchView('map')">
@@ -731,10 +1045,10 @@
 
         <section id="view-mood" class="view hidden fade-in">
             <div class="card">
-                <h2 class="title-serif">情緒顏色牆</h2>
+                <h2 class="title-serif">生活狀態牆</h2>
                 <div class="calendar-nav">
                     <button class="icon-btn" onclick="changeMonth(-1)"><i data-lucide="chevron-left"></i></button>
-                    <h3 id="calendar-mood-title">2024 年 5 月</h3>
+                    <h3 id="calendar-mood-title">2026 年 5 月</h3>
                     <button class="icon-btn" onclick="changeMonth(1)"><i data-lucide="chevron-right"></i></button>
                 </div>
                 <div id="mood-calendar-view">
@@ -783,6 +1097,29 @@
                         <span>生氣</span>
                     </div>
                 </div>
+                <div class="record-box">
+                    <h4>喝水紀錄</h4>
+                    <div class="record-row">
+                        <div class="record-pill" onclick="selectWater('少量')" data-water="少量">💧 少量 </div>
+                        <div class="record-pill" onclick="selectWater('普通')" data-water="普通">💧💧 普通 </div>
+                        <div class="record-pill" onclick="selectWater('充足')" data-water="充足">💧💧💧 充足 </div>
+                    </div>
+                    <div class="record-note">不知道自己該喝多少水？ → <button type="button" class="btn-small" onclick="showWaterCalculator()">幫我算看看</button></div>
+                </div>
+                <div class="record-box">
+                    <h4>運動紀錄</h4>
+                    <div class="record-row">
+                        <div class="record-pill" onclick="selectExercise('light')" data-exercise="light">🌿 有稍微動一下</div>
+                        <div class="record-pill" onclick="selectExercise('active')" data-exercise="active">☀️ 有流汗、有活力</div>
+                        <div class="record-pill" onclick="selectExercise('intense')" data-exercise="intense">🔥 很累但很充實</div>
+                    </div>
+                    <table class="record-table">
+                        <tr><th>選項</th><th>意義</th></tr>
+                        <tr><td>🌿 有稍微動一下</td><td>散步、伸展、走路</td></tr>
+                        <tr><td>☀️ 有流汗、有活力</td><td>運動、快走</td></tr>
+                        <tr><td>🔥 很累但很充實</td><td>高強度、爆汗</td></tr>
+                    </table>
+                </div>
                 <div style="display: flex; gap: 10px; margin-top: 1rem;">
                     <button class="btn btn-outline" style="flex: 1" onclick="closeMoodPicker()">取消</button>
                     <button class="btn" style="flex: 1" onclick="saveMood()">確認儲存</button>
@@ -790,6 +1127,21 @@
             </div>
         </section>
     </main>
+
+    <div id="water-modal-overlay" class="water-modal-overlay">
+        <div class="water-modal">
+            <button class="water-modal-close" onclick="closeWaterCalculator()">✕</button>
+            <h3>🌊 你的每日補水建議</h3>
+            <p>根據體重估算每日建議補水量，幫助你了解適合自己的飲水範圍。公式：體重乘以 30~35 ml。</p>
+            <form id="water-form" class="water-form" onsubmit="event.preventDefault(); calculateWaterSuggestion();">
+                <label for="water-weight-input">你的體重（kg）</label>
+                <input type="number" id="water-weight-input" placeholder="例如 55" min="1" step="0.01" autocomplete="off">
+                <button type="submit">計算建議水量</button>
+            </form>
+            <div id="water-modal-result" class="water-modal-result hidden"></div>
+            <div class="water-modal-note">如果今天天氣炎熱、或有流汗、運動，也可以再多補充一些水分喔。</div>
+        </div>
+    </div>
 
     <!-- Info Modal -->
     <div id="info-modal-overlay" class="info-modal-overlay">
@@ -808,7 +1160,11 @@
         let currentYear = new Date().getFullYear();
         let currentMonth = new Date().getMonth();
         let moodData = JSON.parse(localStorage.getItem('health_plus_moods_v8')) || {};
-        let selectedMoodDate, selectedMoodColor, myChart;
+        let selectedMoodDate = null;
+        let selectedMoodColor = null;
+        let selectedWaterAmount = null;
+        let selectedExerciseLevel = null;
+        let myChart;
 
         function showMsg(txt) {
             const msg = document.getElementById('custom-message');
@@ -860,7 +1216,14 @@
             document.getElementById('view-' + viewId).classList.remove('hidden');
             document.getElementById('nav-' + viewId)?.classList.add('active');
             
-            if(viewId === 'mood') renderMoodCalendar();
+            if(viewId === 'mood') {
+                // 強制隱藏打卡視窗與統計圖表，確保回到乾淨的月曆畫面
+                document.getElementById('mood-picker').classList.add('hidden');
+                document.getElementById('mood-stats-view').classList.add('hidden');
+                document.getElementById('mood-calendar-view').classList.remove('hidden');
+                renderMoodCalendar();
+            }
+            
             if(viewId === 'home') updateDailyQuote();
             window.scrollTo(0,0);
         }
@@ -1336,21 +1699,59 @@
             const todayStr = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
             for(let i = 1; i <= days; i++) {
                 const dateKey = `${currentYear}-${currentMonth+1}-${i}`;
+                const entry = moodData[dateKey] || {};
+                const mood = typeof entry === 'string' ? entry : entry.mood;
+                const water = typeof entry === 'object' && entry ? entry.water : null;
+                const exercise = typeof entry === 'object' && entry ? entry.exercise : null;
                 const day = document.createElement('div');
                 day.className = "calendar-day" + (dateKey === todayStr ? " is-today" : "");
                 day.innerText = i;
-                if(moodData[dateKey]) {
+
+                if(exercise) {
+                    const exerciseIcon = document.createElement('div');
+                    exerciseIcon.className = 'calendar-top-icon exercise-icon';
+                    exerciseIcon.innerHTML = `${exercise === 'light' ? '🌿' : exercise === 'active' ? '☀️' : '🔥'}`;
+                    day.appendChild(exerciseIcon);
+                }
+
+                if(water) {
+                    const waterIcon = document.createElement('div');
+                    waterIcon.className = 'calendar-top-icon water-icon';
+                    
+                    let dropsHtml = '';
+                    if (water === '充足') {
+                        // 三滴水：中間最高，左右交疊
+                        dropsHtml = '<div class="water-group water-3"><span class="w1">💧</span><span class="w2">💧</span><span class="w3">💧</span></div>';
+                    } else if (water === '普通') {
+                        // 兩滴水：斜向交疊
+                        dropsHtml = '<div class="water-group water-2"><span class="w1">💧</span><span class="w2">💧</span></div>';
+                    } else {
+                        // 一滴水
+                        dropsHtml = '<div class="water-group"><span>💧</span></div>';
+                    }
+                    
+                    waterIcon.innerHTML = dropsHtml;
+                    day.appendChild(waterIcon);
+                }
+
+                if(mood) {
                     const dot = document.createElement('div');
-                    dot.className = `marker-dot color-${moodData[dateKey]}`;
+                    dot.className = `marker-dot color-${mood}`;
                     day.appendChild(dot);
                 }
+
                 day.onclick = () => {
                     selectedMoodDate = dateKey;
-                    document.getElementById('mood-picker-date').innerText = `選擇 ${dateKey} 的情緒`;
+                    document.getElementById('mood-picker-date').innerText = `選擇 ${dateKey} 的情緒與紀錄`;
                     document.getElementById('mood-picker').classList.remove('hidden');
                     document.getElementById('mood-calendar-view').classList.add('hidden');
-                    selectedMoodColor = moodData[dateKey] || null;
+                    selectedMoodColor = mood || null;
+                    selectedWaterAmount = water || null;
+                    selectedExerciseLevel = exercise || null;
                     document.querySelectorAll('.mood-option-wrapper').forEach(o => o.classList.toggle('selected', o.dataset.mood === selectedMoodColor));
+                    document.querySelectorAll('.record-pill[data-water]').forEach(o => o.classList.toggle('selected', o.dataset.water === selectedWaterAmount));
+                    document.querySelectorAll('.record-pill[data-exercise]').forEach(o => o.classList.toggle('selected', o.dataset.exercise === selectedExerciseLevel));
+                    document.getElementById('water-calc-result').classList.add('hidden');
                 };
                 grid.appendChild(day);
             }
@@ -1361,9 +1762,51 @@
             document.querySelectorAll('.mood-option-wrapper').forEach(opt => opt.classList.toggle('selected', opt.dataset.mood === color));
         }
 
+        function selectWater(amount) {
+            selectedWaterAmount = amount;
+            document.querySelectorAll('.record-pill[data-water]').forEach(opt => opt.classList.toggle('selected', opt.dataset.water === amount));
+        }
+
+        function selectExercise(level) {
+            selectedExerciseLevel = level;
+            document.querySelectorAll('.record-pill[data-exercise]').forEach(opt => opt.classList.toggle('selected', opt.dataset.exercise === level));
+        }
+
+        function showWaterCalculator() {
+            document.getElementById('water-modal-overlay').classList.add('active');
+            document.getElementById('water-modal-result').classList.add('hidden');
+            document.getElementById('water-form').reset();
+            document.getElementById('water-weight-input').focus();
+        }
+
+        function closeWaterCalculator() {
+            document.getElementById('water-modal-overlay').classList.remove('active');
+        }
+
+        function calculateWaterSuggestion() {
+            const weight = parseFloat(document.getElementById('water-weight-input').value);
+            const resultBox = document.getElementById('water-modal-result');
+            if (isNaN(weight) || weight <= 0) {
+                showMsg('請輸入正確的體重（kg）。');
+                return;
+            }
+            const low = Math.round(weight * 30);
+            const high = Math.round(weight * 35);
+            resultBox.innerText = `🌊 你的每日建議補水量\n\n約 ${low} ~ ${high} ml\n\n如果今天天氣炎熱、\n有流汗或運動，\n也可以再多補充一些水分喔。`;
+            resultBox.classList.remove('hidden');
+        }
+
         function saveMood() {
-            if(!selectedMoodColor) return;
-            moodData[selectedMoodDate] = selectedMoodColor;
+            if (!selectedMoodDate) return;
+            if (!selectedMoodColor && !selectedWaterAmount && !selectedExerciseLevel) {
+                showMsg('請至少選擇情緒、喝水或運動其中一項。');
+                return;
+            }
+            moodData[selectedMoodDate] = {
+                mood: selectedMoodColor || null,
+                water: selectedWaterAmount || null,
+                exercise: selectedExerciseLevel || null
+            };
             localStorage.setItem('health_plus_moods_v8', JSON.stringify(moodData));
             closeMoodPicker(); renderMoodCalendar();
         }
@@ -1383,7 +1826,13 @@
             const counts = {orange:0, green:0, blue:0, gray:0, purple:0, brown:0};
             const prefix = `${currentYear}-${currentMonth+1}-`;
             Object.keys(moodData).forEach(key => {
-                if(key.startsWith(prefix)) counts[moodData[key]]++;
+                if (key.startsWith(prefix)) {
+                    const entry = moodData[key];
+                    const mood = typeof entry === 'string' ? entry : entry && entry.mood;
+                    if (mood && counts.hasOwnProperty(mood)) {
+                        counts[mood]++;
+                    }
+                }
             });
 
             if(myChart) myChart.destroy();
