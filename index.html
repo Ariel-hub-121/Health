@@ -791,27 +791,6 @@
             .water-3 .w3 { transform: translateY(1px); margin-left: -4px; }
         }
         /* --- About Us 關於我們 --- */
-        .about-hero {
-            background: linear-gradient(135deg, rgba(143,158,139,0.85), rgba(95,107,90,0.95));
-            color: white;
-            padding: 4rem 2rem;
-            border-radius: 24px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 3rem;
-            box-shadow: 0 10px 30px rgba(95,107,90,0.2);
-        }
-        .about-hero h2 { font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 1rem; color: white; }
-        .about-hero p { font-size: 1.1rem; opacity: 0.95; max-width: 600px; margin: 0 auto; line-height: 1.8; letter-spacing: 0.05em; }
-        
-        /* 柔和動畫：漂浮圓形 */
-        .floating-circle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.08); animation: float 6s infinite ease-in-out; pointer-events: none; }
-        .fc-1 { width: 120px; height: 120px; top: -30px; left: 10%; animation-duration: 7s; }
-        .fc-2 { width: 180px; height: 180px; bottom: -60px; right: 5%; animation-duration: 9s; animation-delay: 1s; }
-        .fc-3 { width: 70px; height: 70px; top: 40%; left: 80%; animation-duration: 5s; animation-delay: 2s; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
         .about-section-title { text-align: center; font-family: var(--font-serif); font-size: 1.6rem; color: var(--green-dark); margin: 4rem 0 2rem; }
 
         /* --- 核心理念 (純文字品牌感風格) --- */
@@ -861,7 +840,7 @@
         }
 
         .core-text {
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             color: var(--text-main);
             line-height: 1.9;
             max-width: 550px;
@@ -994,20 +973,11 @@
         </section>
 
         <section id="view-about" class="view hidden fade-in">
-            
-            <div class="about-hero">
-                <div class="floating-circle fc-1"></div>
-                <div class="floating-circle fc-2"></div>
-                <div class="floating-circle fc-3"></div>
-                <h2>About Health+</h2>
-                <p>「健康，不只是數字，更是生活的平衡。」<br><br>我們希望透過簡單、有溫度的互動設計，<br>陪伴每個人更了解自己的身體與情緒。</p>
-            </div>
-
             <div class="core-philosophy">
                 <i data-lucide="leaf" class="bg-leaf"></i>
                 <i data-lucide="heart" class="bg-heart"></i>
                 
-                <h3 class="about-section-title" style="margin-top: 0;">我們的核心理念</h3>
+                <h3 class="about-section-title" style="margin-top: 0;">About Health+</h3>
                 
                 <div class="core-quote">
                     「健康不只是數字，更是生活與情緒的平衡。」
@@ -1015,8 +985,8 @@
                 
                 <div class="core-text">
                     <p>我們相信，健康不只是身體上的數值管理，</p>
-                    <p>更包含<strong>情緒、壓力與生活習慣的平衡</strong>。</p>
-                    <p>因此，Health+ 希望透過溫暖且簡單的互動設計，陪伴每位使用者慢慢建立健康習慣，重新認識自己的身體與內心。</p>
+                    <p>更包含<strong>情緒</strong>與<strong>生活習慣</strong>的平衡。</p>
+                    <p>Health+ 希望透過溫暖且簡單的互動設計，陪伴每位使用者慢慢建立健康習慣，重新認識自己的身體與內心。</p>
                 </div>
                 
                 <div class="core-brand-phrase">
@@ -1031,21 +1001,21 @@
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h4>📍 發現問題</h4>
-                        <p style="color: var(--text-main); font-size: 0.95rem;">很多人知道健康很重要，卻不知道該怎麼開始。</p>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">市面上的健康工具大多著重在數據與目標，<br>卻容易讓人感到壓力與疲憊。<br><br>我們發現，比起被要求做到完美，<br>更多人需要的，其實是一種被理解、被鼓勵的感覺，<br>讓健康能自然地融入每天的生活。</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h4>📍 開始發想</h4>
-                        <p style="color: var(--text-main); font-size: 0.95rem;">我們希望把健康網站變得更有互動感與陪伴感。</p>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">我們認為，健康不該只有「控制」與「規定」，<br>而是可以更輕鬆、更有趣、更有成就感。<br><br>於是，我們開始設計一個結合情緒紀錄、生活打卡與互動收藏的健康平台，希望讓使用者在每天的小習慣中，慢慢看見自己的改變。</p>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <h4>📍 Health+ 誕生</h4>
-                        <p style="color: var(--text-main); font-size: 0.95rem;">結合健康管理、情緒紀錄與趣味互動，打造「健康加分站」。</p>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">它不只是健康網站，更像一座陪伴使用者生活的「健康加分站」。<br><br>透過健康管理、情緒紀錄與趣味互動，<br>讓每一次小小的努力，都能慢慢累積成更好的自己。</p>
                     </div>
                 </div>
             </div>
