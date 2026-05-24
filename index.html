@@ -1477,13 +1477,14 @@
             }, 2500);
         }
 
-        async function generateAIResponse(userText) {
-            const replyBox = document.getElementById('mailbox-reply-text');
-            const loadingBox = document.getElementById('mailbox-loading');
-            const resultBox = document.getElementById('mailbox-result-area');
+       async function generateAIResponse(userText) {
+    const replyBox = document.getElementById('mailbox-reply-text');
+    const loadingBox = document.getElementById('mailbox-loading');
+    const resultBox = document.getElementById('mailbox-result-area');
     
-            const apiKey = "AIzaSyCbf6GAPvgdCabgQ2mKdTE1n37fq5LaS5w"; 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
+    const apiKey = "AIzaSyCV1N6jfCtbGcb_6AoY1_ncdp2D9agHzJg"; 
+    
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
     try {
         const res = await fetch(url, {
@@ -1502,10 +1503,19 @@
 
         const data = await res.json();
         
+        // 🌟 新增的除錯機制：如果 API 報錯，直接印在畫面上！
+        if (data.error) {
+            replyBox.innerText = `樹洞暫時罷工了 🥲\n錯誤原因：${data.error.message}\n(請檢查 API Key 權限或模型名稱)`;
+            loadingBox.classList.add('hidden');
+            resultBox.classList.remove('hidden');
+            return; 
+        }
+
         // 抓取正常的 API 回傳文字
         if (data.candidates && data.candidates.length > 0) {
             replyBox.innerText = data.candidates[0].content.parts[0].text;
         } else {
+            // 只有真的被 Google 安全審查擋下來時，才會走到這行
             replyBox.innerText = "樹洞覺得這封信的內容有些敏感，不知道該怎麼回覆比較好...";
         }
 
@@ -1514,15 +1524,9 @@
         replyBox.innerText = "抱歉，樹洞的線路暫時有些不穩定，請稍後再試著寄信看看喔。";
     }
 
-    // 隱藏 loading，顯示結果
     loadingBox.classList.add('hidden');
     resultBox.classList.remove('hidden');
 }
-        function resetMailbox() {
-            document.getElementById('mailbox-input').value = "";
-            document.getElementById('mailbox-result-area').classList.add('hidden');
-            document.getElementById('mailbox-write-area').classList.remove('hidden');
-        }
 
         // --- Google Maps / 健康神隊友 Logic ---
         let map;
