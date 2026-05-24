@@ -1382,7 +1382,7 @@
             font-size: 1.1rem;
         }
 
-        /* 網站特色 (2x2 卡片) */
+        /* 網站特色 */
         .features-2x2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -1398,21 +1398,13 @@
         }
 
         .feature-box {
-            background: white;
-            border: 1px solid var(--khaki-light);
+            background: #FFFFFF;
+            border: 1px solid #C8C2B6;
             padding: 2rem 1.5rem;
             border-radius: 16px;
             transition: all 0.3s ease;
             text-align: center;
             cursor: default;
-        }
-
-        .feature-box:hover {
-            transform: scale(1.05);
-            border-color: var(--green-main);
-            box-shadow: 0 15px 30px rgba(143, 158, 139, 0.15);
-            z-index: 10;
-            position: relative;
         }
 
         /* 團隊介紹 */
@@ -1784,7 +1776,7 @@
             </div>
         </section>
 
-        <!-- 健康神隊友 --> 
+        <!-- 健康神隊友 -->
         <section id="view-map" class="view hidden fade-in">
             <div class="card">
                 <div style="text-align: center; margin-bottom: 2rem;">
@@ -1877,7 +1869,7 @@
 
                 <div class="core-text">
                     <p>我們相信，健康不只是身體上的數值管理，</p>
-                    <p>更包含<strong>情緒</strong>與<strong>生活習慣</strong>的平衡。</p>
+                    <p>更包含<strong style="margin: 0 3px; font-size: 1.08em;">情緒</strong>與<strong style="margin: 0 3px; font-size: 1.08em;">生活習慣</strong>的平衡。</p>
                     <p>Health+ 希望透過溫暖且簡單的互動設計，陪伴每位使用者慢慢建立健康習慣，重新認識自己的身體與內心。</p>
                 </div>
 
@@ -1922,26 +1914,30 @@
                 <div class="feature-box">
                     <i data-lucide="calculator"
                         style="color: var(--green-main); width: 36px; height: 36px; margin-bottom: 12px;"></i>
-                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">數據計算</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">不再面對冰冷公式，輕鬆換算專屬數據。</p>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">輸入數字，讀懂自己的身體</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">BMI 與 TDEE
+                        一鍵計算。數字不只是數字，我們幫你翻譯它真正在說什麼。</p>
                 </div>
                 <div class="feature-box">
                     <i data-lucide="palette"
                         style="color: var(--milk-tea); width: 36px; height: 36px; margin-bottom: 12px;"></i>
-                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">情緒色彩</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">用顏色打卡每一天，誠實面對內在起伏。</p>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">把每天的感受，塗成一個顏色</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">
+                        不需要解釋，點一個顏色就好。日積月累，你會看見屬於自己的情緒節奏。</p>
                 </div>
                 <div class="feature-box">
                     <i data-lucide="clipboard-check"
                         style="color: var(--mist-blue); width: 36px; height: 36px; margin-bottom: 12px;"></i>
-                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">正念測驗</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">三分鐘靜心，重新找回生活的控制感。</p>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">三分鐘，問問最近過得好嗎</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">8
+                        個問題，從運動、睡眠到心理狀態，不評分，只是陪你看清楚。</p>
                 </div>
                 <div class="feature-box">
                     <i data-lucide="mail"
                         style="color: var(--green-dark); width: 36px; height: 36px; margin-bottom: 12px;"></i>
-                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">解憂樹洞</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">安全的傾聽空間，溫柔接住所有的情緒。</p>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">說出來，就已經輕了一半</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">
+                        把今天想說的話寫下來，寄出去。樹洞會認真讀完，再輕輕回你一封信。</p>
                 </div>
             </div>
 
@@ -2379,7 +2375,7 @@
             const rawHeight = document.getElementById('calc-height').value.trim();
             const rawWeight = document.getElementById('calc-weight').value.trim();
             const rawAge = document.getElementById('calc-age').value.trim();
-            
+
             const gender = document.getElementById('calc-gender').value;
             const act = parseFloat(document.getElementById('calc-activity').value);
             const isTDEE = !document.getElementById('tdee-extra-inputs').classList.contains('hidden');
@@ -2522,19 +2518,19 @@
         function selectQuizOption(index) {
             // 1. 記錄使用者的選擇
             quizAnswers[quizIdx] = index;
-            
+
             // 2. 重新渲染畫面，讓剛點擊的選項亮起綠色框框 (selected)
             showQuizQuestion();
-            
+
             // 3. 如果之前有計時器，先清除掉（防止連點）
             if (quizTimeout) {
                 clearTimeout(quizTimeout);
             }
-            
+
             // 4. 設定 0.4 秒 (400毫秒) 後，自動幫使用者執行「下一題」的動作
             quizTimeout = setTimeout(() => {
                 nextQuizQuestion();
-            }, 200); 
+            }, 200);
         }
 
         function prevQuizQuestion() {
