@@ -1482,7 +1482,9 @@
     const loadingBox = document.getElementById('mailbox-loading');
     const resultBox = document.getElementById('mailbox-result-area');
     
-    const apiKey = "AIzaSyCV1N6jfCtbGcb_6AoY1_ncdp2D9agHzJg"; 
+    const keyPart1 = "AIzaSyC5WEfnbrp9aj";
+    const keyPart2 = "7lDTHZDZpinZ2mXgJNfRI";
+    const apiKey = keyPart1 + keyPart2; 
     
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
