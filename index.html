@@ -2516,9 +2516,25 @@
             nextBtn.innerText = quizIdx === quizQuestions.length - 1 ? '完成測驗' : '下一題';
         }
 
+        // 在外面宣告一個變數用來存放計時器，防止使用者連續狂點導致跳題錯亂
+        let quizTimeout = null;
+
         function selectQuizOption(index) {
+            // 1. 記錄使用者的選擇
             quizAnswers[quizIdx] = index;
+            
+            // 2. 重新渲染畫面，讓剛點擊的選項亮起綠色框框 (selected)
             showQuizQuestion();
+            
+            // 3. 如果之前有計時器，先清除掉（防止連點）
+            if (quizTimeout) {
+                clearTimeout(quizTimeout);
+            }
+            
+            // 4. 設定 0.4 秒 (400毫秒) 後，自動幫使用者執行「下一題」的動作
+            quizTimeout = setTimeout(() => {
+                nextQuizQuestion();
+            }, 200); 
         }
 
         function prevQuizQuestion() {
