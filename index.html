@@ -790,6 +790,133 @@
             .water-3 .w2 { transform: translateY(-3px); margin-left: -4px; }
             .water-3 .w3 { transform: translateY(1px); margin-left: -4px; }
         }
+        /* --- About Us 關於我們 --- */
+        .about-hero {
+            background: linear-gradient(135deg, rgba(143,158,139,0.85), rgba(95,107,90,0.95));
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(95,107,90,0.2);
+        }
+        .about-hero h2 { font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 1rem; color: white; }
+        .about-hero p { font-size: 1.1rem; opacity: 0.95; max-width: 600px; margin: 0 auto; line-height: 1.8; letter-spacing: 0.05em; }
+        
+        /* 柔和動畫：漂浮圓形 */
+        .floating-circle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.08); animation: float 6s infinite ease-in-out; pointer-events: none; }
+        .fc-1 { width: 120px; height: 120px; top: -30px; left: 10%; animation-duration: 7s; }
+        .fc-2 { width: 180px; height: 180px; bottom: -60px; right: 5%; animation-duration: 9s; animation-delay: 1s; }
+        .fc-3 { width: 70px; height: 70px; top: 40%; left: 80%; animation-duration: 5s; animation-delay: 2s; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        .about-section-title { text-align: center; font-family: var(--font-serif); font-size: 1.6rem; color: var(--green-dark); margin: 4rem 0 2rem; }
+
+        /* --- 核心理念 (純文字品牌感風格) --- */
+        .core-philosophy {
+            background-color: #F4F7F2; /* 專屬的淺綠色柔和背景 */
+            padding: 4.5rem 2rem;
+            border-radius: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto 4rem;
+            max-width: 800px;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* 背景的淡淡插圖線條 */
+        .bg-leaf {
+            position: absolute;
+            top: -20px;
+            left: -30px;
+            width: 180px;
+            height: 180px;
+            color: var(--green-main);
+            opacity: 0.04;
+            transform: rotate(-15deg);
+            pointer-events: none;
+        }
+        .bg-heart {
+            position: absolute;
+            bottom: -10px;
+            right: -20px;
+            width: 140px;
+            height: 140px;
+            color: var(--milk-tea);
+            opacity: 0.04;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+
+        .core-quote {
+            font-family: var(--font-serif);
+            font-size: 1.6rem;
+            color: var(--green-dark);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        .core-text {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            line-height: 1.9;
+            max-width: 550px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        .core-text strong {
+            color: var(--green-dark);
+            font-weight: 600;
+        }
+
+        .core-text p {
+            margin-bottom: 1rem;
+        }
+
+        .core-brand-phrase {
+            font-family: var(--font-serif);
+            color: var(--milk-tea);
+            font-size: 1.15rem;
+            letter-spacing: 0.1em;
+            margin-top: 1rem;
+        }
+
+        .core-brand-phrase span {
+            display: block;
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            margin-top: 8px;
+            opacity: 0.6;
+        }
+        /* 創立故事 (時間軸) */
+        .timeline { position: relative; max-width: 600px; margin: 0 auto; padding: 1rem 0; }
+        .timeline::before { content: ''; position: absolute; top: 0; left: 20px; height: 100%; width: 2px; background: var(--khaki-light); }
+        .timeline-item { position: relative; margin-bottom: 2.5rem; padding-left: 55px; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-dot { position: absolute; left: 12px; top: 5px; width: 18px; height: 18px; border-radius: 50%; background: var(--green-main); border: 4px solid var(--bg-main); box-shadow: 0 0 0 1px var(--green-main); }
+        .timeline-content { background: white; padding: 1.5rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid transparent; transition: border-color 0.3s; }
+        .timeline-content:hover { border-color: var(--milk-tea); }
+        .timeline-content h4 { color: var(--milk-tea); font-family: var(--font-serif); margin-bottom: 0.5rem; font-size: 1.1rem; }
+
+        /* 網站特色 (2x2 卡片) */
+        .features-2x2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; max-width: 700px; margin: 0 auto; }
+        @media (max-width: 600px) { .features-2x2 { grid-template-columns: 1fr; } }
+        .feature-box { background: white; border: 1px solid var(--khaki-light); padding: 2rem 1.5rem; border-radius: 16px; transition: all 0.3s ease; text-align: center; cursor: default; }
+        .feature-box:hover { transform: scale(1.05); border-color: var(--green-main); box-shadow: 0 15px 30px rgba(143,158,139,0.15); z-index: 10; position: relative; }
+
+        /* 團隊介紹 */
+        .team-grid { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+        .team-card { background: transparent; padding: 1.5rem; border-radius: 16px; border: 1px dashed var(--green-main); text-align: center; flex: 1; min-width: 200px; }
+        .team-role { font-family: var(--font-serif); color: var(--green-dark); font-weight: bold; font-size: 1.1rem; margin: 1rem 0 0.5rem; letter-spacing: 0.1em; }
+
+        /* 結尾大橫幅 */
+        .about-banner { background: var(--khaki-light); padding: 4rem 2rem; border-radius: 24px; text-align: center; margin-top: 5rem; border: 1px solid #e2dcd2; }
+        .about-banner h3 { font-family: var(--font-serif); color: var(--green-dark); font-size: 1.6rem; margin-bottom: 1.2rem; font-weight: 600; }
     </style>
 </head>
 <body>
@@ -809,6 +936,7 @@
                 <li><a onclick="switchView('map')" id="nav-map">神隊友</a></li>
                 <li><a onclick="switchView('mailbox')" id="nav-mailbox">樹洞信箱</a></li>
                 <li><a id="nav-auth" onclick="window.toggleAuth()">登入</a></li>
+                <li><a onclick="switchView('about')" id="nav-about">關於我們</a></li> 
             </ul>
         </nav>
     </header>
@@ -863,6 +991,111 @@
                     <button id="btn-login-now" class="btn" onclick="toggleAuth()" style="display:inline-flex;">立即登入</button>
                 </div>
             </div>
+        </section>
+
+        <section id="view-about" class="view hidden fade-in">
+            
+            <div class="about-hero">
+                <div class="floating-circle fc-1"></div>
+                <div class="floating-circle fc-2"></div>
+                <div class="floating-circle fc-3"></div>
+                <h2>About Health+</h2>
+                <p>「健康，不只是數字，更是生活的平衡。」<br><br>我們希望透過簡單、有溫度的互動設計，<br>陪伴每個人更了解自己的身體與情緒。</p>
+            </div>
+
+            <div class="core-philosophy">
+                <i data-lucide="leaf" class="bg-leaf"></i>
+                <i data-lucide="heart" class="bg-heart"></i>
+                
+                <h3 class="about-section-title" style="margin-top: 0;">我們的核心理念</h3>
+                
+                <div class="core-quote">
+                    「健康不只是數字，更是生活與情緒的平衡。」
+                </div>
+                
+                <div class="core-text">
+                    <p>我們相信，健康不只是身體上的數值管理，</p>
+                    <p>更包含<strong>情緒、壓力與生活習慣的平衡</strong>。</p>
+                    <p>因此，Health+ 希望透過溫暖且簡單的互動設計，陪伴每位使用者慢慢建立健康習慣，重新認識自己的身體與內心。</p>
+                </div>
+                
+                <div class="core-brand-phrase">
+                    一步一步，走向更健康的生活。<br>
+                    <span>Steps to a Healthier Life</span>
+                </div>
+            </div>
+
+            <h3 class="about-section-title">創立故事</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>📍 發現問題</h4>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">很多人知道健康很重要，卻不知道該怎麼開始。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>📍 開始發想</h4>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">我們希望把健康網站變得更有互動感與陪伴感。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>📍 Health+ 誕生</h4>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">結合健康管理、情緒紀錄與趣味互動，打造「健康加分站」。</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="about-section-title">網站特色</h3>
+            <div class="features-2x2">
+                <div class="feature-box">
+                    <i data-lucide="calculator" style="color: var(--green-main); width: 36px; height: 36px; margin-bottom: 12px;"></i>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">數據計算</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">不再面對冰冷公式，輕鬆換算專屬數據。</p>
+                </div>
+                <div class="feature-box">
+                    <i data-lucide="palette" style="color: var(--milk-tea); width: 36px; height: 36px; margin-bottom: 12px;"></i>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">情緒色彩</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">用顏色打卡每一天，誠實面對內在起伏。</p>
+                </div>
+                <div class="feature-box">
+                    <i data-lucide="clipboard-check" style="color: var(--mist-blue); width: 36px; height: 36px; margin-bottom: 12px;"></i>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">正念測驗</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">三分鐘靜心，重新找回生活的控制感。</p>
+                </div>
+                <div class="feature-box">
+                    <i data-lucide="mail" style="color: var(--green-dark); width: 36px; height: 36px; margin-bottom: 12px;"></i>
+                    <h4 style="font-family: var(--font-serif); color: var(--text-main);">解憂樹洞</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 8px;">安全的傾聽空間，溫柔接住所有的情緒。</p>
+                </div>
+            </div>
+
+            <h3 class="about-section-title">團隊介紹</h3>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div style="font-size: 2.5rem;">👩‍💻</div>
+                    <div class="team-role">資管二B-李思妤</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.6;">負責網站介面與互動效果<br>讓操作更直覺有趣</p>
+                </div>
+                <div class="team-card">
+                    <div style="font-size: 2.5rem;">🎨</div>
+                    <div class="team-role">資管二B-陳音儒</div>
+                    <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.6;">規劃色彩與版面配置<br>打造溫暖舒服的網站風格</p>
+                </div>
+            </div>
+
+            <div class="about-banner">
+                <h3>「一步一步，走向更健康的生活。」</h3>
+                <p style="color: var(--text-light); font-size: 1.05rem; line-height: 1.8;">Health+ 希望成為生活中的小小陪伴，<br>提醒你在忙碌的日子裡，也別忘了照顧自己。</p>
+                <div style="margin-top: 2rem;">
+                    <button class="btn" onclick="switchView('home')">回到首頁</button>
+                </div>
+            </div>
+            
         </section>
 
         <section id="view-mailbox" class="view hidden fade-in">
@@ -1209,7 +1442,7 @@
 
         // 切換視圖功能 (已包含 map 與 mailbox 路由控制)
         function switchView(viewId) {
-            ['home', 'map', 'calc', 'quiz', 'mood', 'mailbox'].forEach(v => {
+            ['home', 'map', 'calc', 'quiz', 'mood', 'mailbox','about'].forEach(v => {
                 document.getElementById('view-' + v).classList.add('hidden');
                 document.getElementById('nav-' + v)?.classList.remove('active');
             });
@@ -1244,25 +1477,47 @@
             }, 2500);
         }
 
-        function generateAIResponse(userText) {
+        async function generateAIResponse(userText) {
             const replyBox = document.getElementById('mailbox-reply-text');
-            let response = "";
+            const loadingBox = document.getElementById('mailbox-loading');
+            const resultBox = document.getElementById('mailbox-result-area');
+    
+            const apiKey = "AIzaSyCbf6GAPvgdCabgQ2mKdTE1n37fq5LaS5w"; 
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
-            if (userText.includes("累") || userText.includes("疲倦") || userText.includes("不想努力")) {
-                response = "輕輕展信，讀到了你的疲憊。\n\n心理學中有個概念叫做「自我枯竭（Ego Depletion）」，當我們不斷消耗意志力去應對生活，卻沒有足夠的時間補充時，大腦就會拉響警報，讓你感到深深的無力。\n\n我想告訴你，你的疲憊是真實的，這代表你已經很努力撐了一段時間。請給自己一個理直氣壯休息的理由，今晚什麼都別管，好好睡一覺吧。世界不會因為你休息一天而崩塌，但你會因為休息而重新找回自己。";
-            } else if (userText.includes("開心") || userText.includes("快樂") || userText.includes("好棒")) {
-                response = "看著你的文字，我也能感受到那份愉悅的震動！\n\n正向心理學認為，細細品味並記錄下美好的時刻（Savoring），能有效改變我們大腦的神經迴路，提升長期的幸福感。你願意把這份快樂寫下來，就是一個非常棒的練習。\n\n把這個開心的瞬間存在心裡的抽屜吧，未來如果遇到陰天時，打開抽屜，它會是你最棒的陽光。";
-            } else if (userText.includes("煩") || userText.includes("生氣") || userText.includes("焦慮") || userText.includes("壓力")) {
-                response = "收到你的信了。感覺到你現在的心裡像是被揉成一團的毛線，充滿了壓力與焦慮。\n\n當情緒來襲時，我們的杏仁核會過度活化。試著做三個深深的深呼吸，把注意力拉回當下的身體感受。情緒就像天氣，有時狂風暴雨，但它總會過去。\n\n你不必急著把毛線解開，允許自己現在就是心煩的。我會在這裡靜靜地陪著你，等你準備好，我們再來慢慢梳理。";
-            } else {
-                response = "輕輕地展信，讀到了你的心聲。\n\n無論你今天經歷了什麼，好的或壞的，我都全盤接收了。在心理治療中，被「無條件地傾聽與接納」是療癒的開端。你可以把這裡當作一個絕對安全的空間，沒有評價，只有陪伴。\n\n如果覺得需要，隨時再來寫信給我。祝福你今晚有個平靜安穩的夜晚。";
-            }
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: `你現在是一個名為「Health+ 健康加分站」的溫柔樹洞。請用溫暖、同理、不批判的語氣，回覆以下這封使用者的信件。字數控制在 150 字以內，繁體中文：\n\n${userText}`
+                    }]
+                }]
+            })
+        });
 
-            replyBox.innerText = response;
-            document.getElementById('mailbox-loading').classList.add('hidden');
-            document.getElementById('mailbox-result-area').classList.remove('hidden');
+        const data = await res.json();
+        
+        // 抓取正常的 API 回傳文字
+        if (data.candidates && data.candidates.length > 0) {
+            replyBox.innerText = data.candidates[0].content.parts[0].text;
+        } else {
+            replyBox.innerText = "樹洞覺得這封信的內容有些敏感，不知道該怎麼回覆比較好...";
         }
 
+    } catch (error) {
+        console.error("API 呼叫失敗:", error);
+        replyBox.innerText = "抱歉，樹洞的線路暫時有些不穩定，請稍後再試著寄信看看喔。";
+    }
+
+    // 隱藏 loading，顯示結果
+    loadingBox.classList.add('hidden');
+    resultBox.classList.remove('hidden');
+}
         function resetMailbox() {
             document.getElementById('mailbox-input').value = "";
             document.getElementById('mailbox-result-area').classList.add('hidden');
