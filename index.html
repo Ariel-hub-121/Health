@@ -53,56 +53,125 @@
             min-height: 100vh;
         }
 
-        /* --- Layout --- */
-        header {
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
+        /* --- Layout (收拉式選單) --- */
+        /* 漢堡按鈕 */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 400;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--khaki-light);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--khaki-light);
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            color: var(--green-dark);
+            transition: all 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background: var(--khaki-light);
+            transform: scale(1.05);
+        }
+
+        /* 側邊欄主體 */
+        header {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            z-index: 500;
+            padding: 5rem 2rem 2rem; /* 上方留白，避免跟按鈕重疊 */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            border-right: 1px solid var(--khaki-light);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+            transform: translateX(-100%); /* 預設隱藏在畫面左側外 */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        /* 當加上 open 類別時滑入 */
+        header.open {
+            transform: translateX(0);
+        }
+
+        /* 遮罩背景 */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 450;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .logo {
             font-family: var(--font-serif);
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--green-main);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
+            margin-bottom: 3rem;
         }
 
+        nav { width: 100%; }
+        
         nav ul {
             display: flex;
+            flex-direction: column;
             list-style: none;
-            gap: 1.5rem;
-            align-items: center;
+            gap: 0.5rem;
+            align-items: flex-start;
+            width: 100%;
         }
 
         nav a {
+            display: block;
+            width: 100%;
+            padding: 1rem 1.2rem;
             text-decoration: none;
             color: var(--text-light);
-            font-size: 0.95rem;
-            transition: color 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
             cursor: pointer;
+            border-radius: 12px;
         }
 
         nav a:hover,
         nav a.active {
             color: var(--green-dark);
-            font-weight: 500;
+            font-weight: 600;
+            background-color: var(--khaki-light);
         }
 
+        /* 主要內容區上方增加留白，避免被左上角漢堡按鈕蓋住 */
         main {
             max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 0 auto;
+            padding: 5rem 1rem 2rem; 
         }
 
         /* --- Components --- */
@@ -1164,73 +1233,7 @@
             }
         }
 
-        /* ========================================== */
-        /* 手機版適應排版 (螢幕寬度小於 600px 時觸發) */
-        /* ========================================== */
-        @media (max-width: 600px) {
-
-            /* 1. 讓日期數字稍微變小，騰出空間 */
-            .calendar-day {
-                font-size: 0.75rem;
-            }
-
-            /* 2. 縮小運動與喝水的整體圖示尺寸，並往邊緣靠攏 */
-            .calendar-top-icon {
-                font-size: 0.6rem !important;
-                min-width: unset;
-                padding: 0;
-                top: 2px;
-                /* 貼緊上方邊緣 */
-            }
-
-            .exercise-icon {
-                left: 2px;
-                /* 貼緊左方邊緣 */
-            }
-
-            .water-icon {
-                right: 2px;
-                /* 貼緊右方邊緣 */
-            }
-
-            /* 3. 縮小下方的狀態圓點 */
-            .marker-dot {
-                width: 8px;
-                height: 8px;
-                bottom: 4px;
-                /* 往下靠攏 */
-            }
-
-            /* 4. 微調剛剛設定的水滴交疊間距，避免在手機上縮成一團 */
-            .water-group span {
-                font-size: 0.55rem;
-                /* 水滴變更小 */
-            }
-
-            .water-2 .w1 {
-                transform: translateY(1px);
-            }
-
-            .water-2 .w2 {
-                transform: translateY(-1px);
-                margin-left: -3px;
-            }
-
-            .water-3 .w1 {
-                transform: translateY(1px);
-            }
-
-            .water-3 .w2 {
-                transform: translateY(-3px);
-                margin-left: -4px;
-            }
-
-            .water-3 .w3 {
-                transform: translateY(1px);
-                margin-left: -4px;
-            }
-        }
-
+        
         /* --- About Us 關於我們 --- */
         .about-section-title {
             text-align: center;
@@ -1455,7 +1458,10 @@
 </head>
 
 <body>
-
+    <button id="menu-toggle" class="menu-toggle" onclick="toggleSidebar()">
+        <i data-lucide="menu"></i>
+    </button>
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div id="custom-message" class="hidden">提示訊息</div>
 
     <header>
@@ -2047,7 +2053,15 @@
             document.getElementById('quote-text').innerText = randomQuote;
         }
 
-        // 切換視圖功能 (已包含 map 與 mailbox 路由控制)
+        // 開關側邊欄的函式
+        function toggleSidebar() {
+            const header = document.querySelector('header');
+            const overlay = document.getElementById('sidebar-overlay');
+            header.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // 切換視圖功能
         function switchView(viewId) {
             ['home', 'map', 'calc', 'quiz', 'mood', 'mailbox', 'about'].forEach(v => {
                 document.getElementById('view-' + v).classList.add('hidden');
@@ -2057,7 +2071,6 @@
             document.getElementById('nav-' + viewId)?.classList.add('active');
 
             if (viewId === 'mood') {
-                // 強制隱藏打卡視窗與統計圖表，確保回到乾淨的月曆畫面
                 document.getElementById('mood-picker').classList.add('hidden');
                 document.getElementById('mood-stats-view').classList.add('hidden');
                 document.getElementById('mood-calendar-view').classList.remove('hidden');
@@ -2066,6 +2079,10 @@
 
             if (viewId === 'home') updateDailyQuote();
             window.scrollTo(0, 0);
+
+            // 切換頁面後自動關閉側邊欄
+            document.querySelector('header').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('active');
         }
 
         // --- Mailbox (AI 樹洞) Logic ---
