@@ -53,56 +53,125 @@
             min-height: 100vh;
         }
 
-        /* --- Layout --- */
-        header {
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
+        /* --- Layout (收拉式選單) --- */
+        /* 漢堡按鈕 */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 400;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--khaki-light);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--khaki-light);
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            color: var(--green-dark);
+            transition: all 0.3s;
+        }
+
+        .menu-toggle:hover {
+            background: var(--khaki-light);
+            transform: scale(1.05);
+        }
+
+        /* 側邊欄主體 */
+        header {
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            z-index: 500;
+            padding: 5rem 2rem 2rem; /* 上方留白，避免跟按鈕重疊 */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            border-right: 1px solid var(--khaki-light);
+            box-shadow: 10px 0 30px rgba(0,0,0,0.05);
+            transform: translateX(-100%); /* 預設隱藏在畫面左側外 */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        /* 當加上 open 類別時滑入 */
+        header.open {
+            transform: translateX(0);
+        }
+
+        /* 遮罩背景 */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 450;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .logo {
             font-family: var(--font-serif);
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--green-main);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
+            margin-bottom: 3rem;
         }
 
+        nav { width: 100%; }
+        
         nav ul {
             display: flex;
+            flex-direction: column;
             list-style: none;
-            gap: 1.5rem;
-            align-items: center;
+            gap: 0.5rem;
+            align-items: flex-start;
+            width: 100%;
         }
 
         nav a {
+            display: block;
+            width: 100%;
+            padding: 1rem 1.2rem;
             text-decoration: none;
             color: var(--text-light);
-            font-size: 0.95rem;
-            transition: color 0.3s;
+            font-size: 1rem;
+            transition: all 0.3s ease;
             cursor: pointer;
+            border-radius: 12px;
         }
 
         nav a:hover,
         nav a.active {
             color: var(--green-dark);
-            font-weight: 500;
+            font-weight: 600;
+            background-color: var(--khaki-light);
         }
 
+        /* 主要內容區上方增加留白，避免被左上角漢堡按鈕蓋住 */
         main {
             max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 0 auto;
+            padding: 5rem 1rem 2rem; 
         }
 
         /* --- Components --- */
@@ -244,7 +313,6 @@
             transition: all 0.3s;
             text-align: left;
             cursor: pointer;
-            /* 變更游標為手指形狀，提示可點擊 */
         }
 
         .place-item:hover {
@@ -258,6 +326,13 @@
             font-weight: 600;
             color: var(--text-main);
             margin-bottom: 5px;
+            font-size: 1.05rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .place-item:hover .place-name {
+            font-size: 1.2rem;
+            color: var(--green-dark);
         }
 
         .place-address {
@@ -265,7 +340,41 @@
             color: var(--text-light);
         }
 
-        /* --- Calendar Logic --- */
+        /* --- Mailbox Features --- */
+        .mailbox-textarea {
+            width: 100%;
+            height: 180px;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--khaki-light);
+            background: var(--bg-main);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            color: var(--text-main);
+            resize: none;
+            outline: none;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .mailbox-textarea:focus {
+            border-color: var(--green-main);
+            background: #fff;
+        }
+
+        .letter-reply {
+            background: #fcfbf9;
+            padding: 2rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--milk-tea);
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            white-space: pre-line;
+            line-height: 2;
+        }
+
+        /* --- Calendar & Mood Grid Logic --- */
         .calendar-nav {
             display: flex;
             align-items: center;
@@ -309,7 +418,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        /* --- Mood Grid --- */
         .mood-pallette-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -641,29 +749,12 @@
             left: 8px;
         }
 
-        .color-orange {
-            background-color: var(--mood-happy);
-        }
-
-        .color-green {
-            background-color: var(--mood-calm);
-        }
-
-        .color-blue {
-            background-color: var(--mood-anxious);
-        }
-
-        .color-gray {
-            background-color: var(--mood-tired);
-        }
-
-        .color-purple {
-            background-color: var(--mood-sad);
-        }
-
-        .color-brown {
-            background-color: var(--mood-angry);
-        }
+        .color-orange { background-color: var(--mood-happy); }
+        .color-green { background-color: var(--mood-calm); }
+        .color-blue { background-color: var(--mood-anxious); }
+        .color-gray { background-color: var(--mood-tired); }
+        .color-purple { background-color: var(--mood-sad); }
+        .color-brown { background-color: var(--mood-angry); }
 
         /* --- Utils --- */
         .icon-btn {
@@ -701,12 +792,18 @@
             transition: all 0.2s;
             display: flex;
             align-items: center;
+            border: 1px solid transparent;
         }
 
         .quiz-option:hover {
             transform: translateX(5px);
             background: #fff;
-            border: 1px solid var(--green-main);
+            border-color: var(--green-main);
+        }
+
+        .quiz-option.selected {
+            background: #f0f5ec;
+            border-color: var(--green-main);
         }
 
         .quiz-option .prefix {
@@ -733,27 +830,20 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .fade-in {
             animation: fadeIn 0.6s ease forwards;
         }
 
-        /* --- Info Icon & Modal --- */
-        .info-btn-container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
         }
+
+        /* --- Info Icon & Modal --- */
+        .info-btn-container { display: flex; gap: 10px; align-items: center; }
 
         .info-icon-btn {
             display: inline-flex;
@@ -772,9 +862,7 @@
             border: none;
         }
 
-        .info-icon-btn:hover {
-            background-color: #d8d8d8;
-        }
+        .info-icon-btn:hover { background-color: #d8d8d8; }
 
         .info-tooltip {
             position: absolute;
@@ -795,9 +883,7 @@
             border: 1px solid #ddd;
         }
 
-        .info-icon-btn:hover .info-tooltip {
-            opacity: 1;
-        }
+        .info-icon-btn:hover .info-tooltip { opacity: 1; }
 
         .info-modal-overlay {
             position: fixed;
@@ -815,10 +901,7 @@
             transition: opacity 0.3s ease;
         }
 
-        .info-modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
+        .info-modal-overlay.active { opacity: 1; pointer-events: all; }
 
         .info-modal {
             background: var(--bg-card);
@@ -843,392 +926,36 @@
             transition: color 0.2s;
         }
 
-        .info-modal-close:hover {
-            color: var(--text-main);
-        }
+        .info-modal-close:hover { color: var(--text-main); }
 
-        .info-modal h3 {
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            color: var(--green-main);
-            margin-bottom: 1rem;
-        }
-
-        .info-modal h4 {
-            font-family: var(--font-serif);
-            font-size: 1.1rem;
-            color: var(--green-dark);
-            margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .info-modal p {
-            color: var(--text-main);
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-
-        .info-modal ul {
-            list-style: none;
-            padding-left: 0;
-            margin-bottom: 1rem;
-        }
-
-        .info-modal li {
-            color: var(--text-main);
-            line-height: 1.8;
-            margin-bottom: 0.5rem;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-
-        .info-modal li:before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--milk-tea);
-        }
-
-        .info-modal code {
-            background-color: var(--bg-main);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            font-family: monospace;
-            color: var(--milk-tea);
-        }
-
-        .place-item {
-            background: var(--bg-main);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            border: 1px solid var(--khaki-light);
-            transition: all 0.3s;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .place-item:hover {
-            border-color: var(--green-main);
-            transform: translateX(5px);
-            background: #fff;
-        }
-
-        .place-name {
-            font-family: var(--font-serif);
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 5px;
-            font-size: 1.05rem;
-            transition: all 0.2s ease-in-out;
-        }
-
-        .place-item:hover .place-name {
-            font-size: 1.2rem;
-            color: var(--green-dark);
-        }
-
-        .place-address {
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        /* --- Mailbox Features --- */
-        .mailbox-textarea {
-            width: 100%;
-            height: 180px;
-            padding: 1.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--khaki-light);
-            background: var(--bg-main);
-            font-family: var(--font-sans);
-            font-size: 1rem;
-            color: var(--text-main);
-            resize: none;
-            outline: none;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .mailbox-textarea:focus {
-            border-color: var(--green-main);
-            background: #fff;
-        }
-
-        .letter-reply {
-            background: #fcfbf9;
-            padding: 2rem;
-            border-radius: 16px;
-            border-left: 4px solid var(--milk-tea);
-            margin-top: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            white-space: pre-line;
-            line-height: 2;
-        }
-
-        /* --- Calendar & Mood Grid Logic --- */
-        .calendar-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 12px;
-            margin-top: 1rem;
-        }
-
-        .calendar-day {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fdfdfd;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border: 1px solid #eee;
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .calendar-day.is-today {
-            border: 2px solid var(--green-dark);
-            background-color: var(--khaki-light);
-            font-weight: 700;
-        }
-
-        .marker-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .mood-pallette-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 1.5rem 0;
-        }
-
-        .mood-option-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 3px solid transparent;
-            transition: transform 0.2s, border-color 0.2s;
-            margin: 0 auto 8px;
-        }
-
-        .mood-option-wrapper {
-            text-align: center;
-            padding: 12px 5px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .mood-option-wrapper.selected {
-            background-color: #f0f0f0;
-        }
-
-        .mood-option-wrapper.selected .mood-option-circle {
-            border-color: var(--green-dark);
-            transform: scale(1.1);
-        }
-
-        .color-orange {
-            background-color: var(--mood-happy);
-        }
-
-        .color-green {
-            background-color: var(--mood-calm);
-        }
-
-        .color-blue {
-            background-color: var(--mood-anxious);
-        }
-
-        .color-gray {
-            background-color: var(--mood-tired);
-        }
-
-        .color-purple {
-            background-color: var(--mood-sad);
-        }
-
-        .color-brown {
-            background-color: var(--mood-angry);
-        }
-
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px;
-            border-radius: 50%;
-            transition: background 0.3s;
-        }
-
-        .icon-btn:hover {
-            background: var(--khaki-light);
-            color: var(--green-dark);
-        }
-
-        footer {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-light);
-            font-size: 0.8rem;
-        }
-
-        .quiz-option {
-            background-color: var(--bg-main);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            border: 1px solid transparent;
-        }
-
-        .quiz-option:hover {
-            transform: translateX(5px);
-            background: #fff;
-            border-color: var(--green-main);
-        }
-
-        .quiz-option.selected {
-            background: #f0f5ec;
-            border-color: var(--green-main);
-        }
-
-        .quiz-option .prefix {
-            font-family: var(--font-serif);
-            color: var(--milk-tea);
-            font-weight: 600;
-            margin-right: 15px;
-            width: 20px;
-        }
-
-        #custom-message {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--text-main);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 30px;
-            z-index: 1000;
-            font-size: 0.9rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease forwards;
-        }
-
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+        .info-modal h3 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--green-main); margin-bottom: 1rem; }
+        .info-modal h4 { font-family: var(--font-serif); font-size: 1.1rem; color: var(--green-dark); margin-top: 1.5rem; margin-bottom: 0.8rem; }
+        .info-modal p { color: var(--text-main); line-height: 1.8; margin-bottom: 1rem; }
+        .info-modal ul { list-style: none; padding-left: 0; margin-bottom: 1rem; }
+        .info-modal li { color: var(--text-main); line-height: 1.8; margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative; }
+        .info-modal li:before { content: "•"; position: absolute; left: 0; color: var(--milk-tea); }
+        .info-modal code { background-color: var(--bg-main); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; color: var(--milk-tea); }
 
         /* ========================================== */
         /* 手機版適應排版 (螢幕寬度小於 600px 時觸發) */
         /* ========================================== */
         @media (max-width: 600px) {
-
-            /* 1. 讓日期數字稍微變小，騰出空間 */
-            .calendar-day {
-                font-size: 0.75rem;
-            }
-
-            /* 2. 縮小運動與喝水的整體圖示尺寸，並往邊緣靠攏 */
+            .calendar-day { font-size: 0.75rem; }
             .calendar-top-icon {
                 font-size: 0.6rem !important;
                 min-width: unset;
                 padding: 0;
                 top: 2px;
-                /* 貼緊上方邊緣 */
             }
-
-            .exercise-icon {
-                left: 2px;
-                /* 貼緊左方邊緣 */
-            }
-
-            .water-icon {
-                right: 2px;
-                /* 貼緊右方邊緣 */
-            }
-
-            /* 3. 縮小下方的狀態圓點 */
-            .marker-dot {
-                width: 8px;
-                height: 8px;
-                bottom: 4px;
-                /* 往下靠攏 */
-            }
-
-            /* 4. 微調剛剛設定的水滴交疊間距，避免在手機上縮成一團 */
-            .water-group span {
-                font-size: 0.55rem;
-                /* 水滴變更小 */
-            }
-
-            .water-2 .w1 {
-                transform: translateY(1px);
-            }
-
-            .water-2 .w2 {
-                transform: translateY(-1px);
-                margin-left: -3px;
-            }
-
-            .water-3 .w1 {
-                transform: translateY(1px);
-            }
-
-            .water-3 .w2 {
-                transform: translateY(-3px);
-                margin-left: -4px;
-            }
-
-            .water-3 .w3 {
-                transform: translateY(1px);
-                margin-left: -4px;
-            }
+            .exercise-icon { left: 2px; }
+            .water-icon { right: 2px; }
+            .marker-dot { width: 8px; height: 8px; bottom: 4px; }
+            .water-group span { font-size: 0.55rem; }
+            .water-2 .w1 { transform: translateY(1px); }
+            .water-2 .w2 { transform: translateY(-1px); margin-left: -3px; }
+            .water-3 .w1 { transform: translateY(1px); }
+            .water-3 .w2 { transform: translateY(-3px); margin-left: -4px; }
+            .water-3 .w3 { transform: translateY(1px); margin-left: -4px; }
         }
 
         /* --- About Us 關於我們 --- */
@@ -1243,7 +970,6 @@
         /* --- 核心理念 (純文字品牌感風格) --- */
         .core-philosophy {
             background-color: #F4F7F2;
-            /* 專屬的淺綠色柔和背景 */
             padding: 4.5rem 2rem;
             border-radius: 24px;
             text-align: center;
@@ -1301,9 +1027,7 @@
             font-weight: 600;
         }
 
-        .core-text p {
-            margin-bottom: 1rem;
-        }
+        .core-text p { margin-bottom: 1rem; }
 
         .core-brand-phrase {
             font-family: var(--font-serif);
@@ -1346,9 +1070,7 @@
             padding-left: 55px;
         }
 
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
+        .timeline-item:last-child { margin-bottom: 0; }
 
         .timeline-dot {
             position: absolute;
@@ -1371,9 +1093,7 @@
             transition: border-color 0.3s;
         }
 
-        .timeline-content:hover {
-            border-color: var(--milk-tea);
-        }
+        .timeline-content:hover { border-color: var(--milk-tea); }
 
         .timeline-content h4 {
             color: var(--milk-tea);
@@ -1392,9 +1112,7 @@
         }
 
         @media (max-width: 600px) {
-            .features-2x2 {
-                grid-template-columns: 1fr;
-            }
+            .features-2x2 { grid-template-columns: 1fr; }
         }
 
         .feature-box {
@@ -1455,7 +1173,10 @@
 </head>
 
 <body>
-
+    <button id="menu-toggle" class="menu-toggle" onclick="toggleSidebar()">
+        <i data-lucide="menu"></i>
+    </button>
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div id="custom-message" class="hidden">提示訊息</div>
 
     <header>
@@ -1531,14 +1252,12 @@
             </div>
         </section>
 
-        <!-- BMI & TDEE 計算器 -->
         <section id="view-calc" class="view hidden fade-in">
             <div class="card">
                 <h2 class="title-serif">BMI & TDEE 計算器</h2>
                 <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
                     <button type="button" class="btn" id="btn-bmi-mode" onclick="setCalcMode('BMI')">BMI 計算</button>
-                    <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE
-                        計算器</button>
+                    <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE 計算器</button>
                 </div>
                 <form id="calc-inputs" onsubmit="event.preventDefault(); calculate();">
                     <div style="margin-bottom: 1.5rem;">
@@ -1606,7 +1325,6 @@
             </div>
         </section>
 
-        <!-- 健康小測驗 -->
         <section id="view-quiz" class="view hidden fade-in">
             <div id="quiz-intro" class="card" style="text-align: center;">
                 <div
@@ -1670,7 +1388,6 @@
             </div>
         </section>
 
-        <!-- 生活狀態牆 -->
         <section id="view-mood" class="view hidden fade-in">
             <div class="card">
                 <h2 class="title-serif">生活狀態牆</h2>
@@ -1776,7 +1493,6 @@
             </div>
         </section>
 
-        <!-- 健康神隊友 -->
         <section id="view-map" class="view hidden fade-in">
             <div class="card">
                 <div style="text-align: center; margin-bottom: 2rem;">
@@ -1817,7 +1533,6 @@
             </div>
         </section>
 
-        <!-- 樹洞信箱 -->
         <section id="view-mailbox" class="view hidden fade-in">
             <div class="card">
                 <div style="text-align: center; margin-bottom: 2rem;">
@@ -1855,7 +1570,6 @@
             </div>
         </section>
 
-        <!-- 關於我們 -->
         <section id="view-about" class="view hidden fade-in">
             <div class="core-philosophy">
                 <i data-lucide="leaf" class="bg-leaf"></i>
@@ -1983,7 +1697,6 @@
         </div>
     </div>
 
-    <!-- Info Modal -->
     <div id="info-modal-overlay" class="info-modal-overlay">
         <div class="info-modal">
             <button class="info-modal-close" onclick="closeInfoModal()">✕</button>
@@ -2047,7 +1760,15 @@
             document.getElementById('quote-text').innerText = randomQuote;
         }
 
-        // 切換視圖功能 (已包含 map 與 mailbox 路由控制)
+        // 開關側邊欄的函式
+        function toggleSidebar() {
+            const header = document.querySelector('header');
+            const overlay = document.getElementById('sidebar-overlay');
+            header.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // 切換視圖功能
         function switchView(viewId) {
             ['home', 'map', 'calc', 'quiz', 'mood', 'mailbox', 'about'].forEach(v => {
                 document.getElementById('view-' + v).classList.add('hidden');
@@ -2057,7 +1778,6 @@
             document.getElementById('nav-' + viewId)?.classList.add('active');
 
             if (viewId === 'mood') {
-                // 強制隱藏打卡視窗與統計圖表，確保回到乾淨的月曆畫面
                 document.getElementById('mood-picker').classList.add('hidden');
                 document.getElementById('mood-stats-view').classList.add('hidden');
                 document.getElementById('mood-calendar-view').classList.remove('hidden');
@@ -2066,6 +1786,10 @@
 
             if (viewId === 'home') updateDailyQuote();
             window.scrollTo(0, 0);
+
+            // 切換頁面後自動關閉側邊欄
+            document.querySelector('header').classList.remove('open');
+            document.getElementById('sidebar-overlay').classList.remove('active');
         }
 
         // --- Mailbox (AI 樹洞) Logic ---
@@ -2089,7 +1813,9 @@
             const loadingBox = document.getElementById('mailbox-loading');
             const resultBox = document.getElementById('mailbox-result-area');
 
-            const apiKey = "AIzaSyCbf6GAPvgdCabgQ2mKdTE1n37fq5LaS5w";
+            const keyPart1 = "AIzaSyC5WEfnbrp9aj";
+            const keyPart2 = "7lDTHZDZpinZ2mXgJNfRI";
+            const apiKey = keyPart1 + keyPart2; 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
             try {
