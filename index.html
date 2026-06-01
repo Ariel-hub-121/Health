@@ -1256,8 +1256,20 @@
             <div class="card">
                 <h2 class="title-serif">BMI & TDEE 計算器</h2>
                 <div style="display: flex; gap: 10px; margin-bottom: 2rem;">
-                    <button type="button" class="btn" id="btn-bmi-mode" onclick="setCalcMode('BMI')">BMI 計算</button>
-                    <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE 計算器</button>
+                    <div class="info-btn-container">
+                        <button type="button" class="btn" id="btn-bmi-mode" onclick="setCalcMode('BMI')">BMI 計算</button>
+                        <button type="button" class="info-icon-btn" onclick="showInfoModal('bmi')" title="BMI 詳細介紹">
+                            ?
+                            <span class="info-tooltip">BMI詳細介紹</span>
+                        </button>
+                    </div>
+                    <div class="info-btn-container">
+                        <button type="button" class="btn btn-outline" id="btn-tdee-mode" onclick="setCalcMode('TDEE')">TDEE 計算器</button>
+                        <button type="button" class="info-icon-btn" onclick="showInfoModal('tdee')" title="TDEE 詳細介紹">
+                            ?
+                            <span class="info-tooltip">TDEE詳細介紹</span>
+                        </button>
+                    </div>
                 </div>
                 <form id="calc-inputs" onsubmit="event.preventDefault(); calculate();">
                     <div style="margin-bottom: 1.5rem;">
