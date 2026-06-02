@@ -1813,33 +1813,21 @@
             const loadingBox = document.getElementById('mailbox-loading');
             const resultBox = document.getElementById('mailbox-result-area');
 
-            const keyPart1 = "AIzaSyC5WEfnbrp9aj";
-            const keyPart2 = "7lDTHZDZpinZ2mXgJNfRI";
-            const apiKey = keyPart1 + keyPart2; 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
-
             try {
-                const res = await fetch(url, {
+                const res = await fetch("https://health.chyinru.workers.dev", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: `你現在是一個名為「Health+ 健康加分站」的溫柔樹洞。請用溫暖、同理、不批判的語氣，回覆以下這封使用者的信件。字數控制在 150 字以內，繁體中文：\n\n${userText}`
-                            }]
-                        }]
-                    })
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userText })
                 });
 
+                console.log("HTTP status:", res.status); // 加這行
                 const data = await res.json();
+                console.log("完整回應:", JSON.stringify(data)); // 加這行
 
-                // 抓取正常的 API 回傳文字
-                if (data.candidates && data.candidates.length > 0) {
-                    replyBox.innerText = data.candidates[0].content.parts[0].text;
+                if (data.reply) {
+                    replyBox.innerText = data.reply;
                 } else {
-                    replyBox.innerText = "樹洞覺得這封信的內容有些敏感，不知道該怎麼回覆比較好...";
+                    replyBox.innerText = "樹洞覺得這封信的內容有些敏感...";
                 }
 
             } catch (error) {
@@ -1847,7 +1835,6 @@
                 replyBox.innerText = "抱歉，樹洞的線路暫時有些不穩定，請稍後再試著寄信看看喔。";
             }
 
-            // 隱藏 loading，顯示結果
             loadingBox.classList.add('hidden');
             resultBox.classList.remove('hidden');
         }
@@ -1855,7 +1842,7 @@
             document.getElementById('mailbox-input').value = "";
             document.getElementById('mailbox-result-area').classList.add('hidden');
             document.getElementById('mailbox-write-area').classList.remove('hidden');
-        }
+                }
 
         // --- Google Maps / 健康神隊友 Logic ---
         let map;
