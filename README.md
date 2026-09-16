@@ -1,4 +1,4 @@
-# Health+
+﻿# Health+
 
 A browser-based wellness app that brings physical wellness, emotional well-being, and everyday habit building into one welcoming space.
 
@@ -24,43 +24,67 @@ Start with the health quiz to reflect on recent habits, then explore the BMI and
 
 Use a modern browser and allow location access to discover nearby activity spaces. Maps, Google sign-in, and mailbox replies require an internet connection and available external services.
 
-## Screenshots
+## How to Use
 
-### Homepage
+Open the [live demo](https://ariel-hub-121.github.io/Health/) and choose a tool from the homepage or sidebar. The interface is in Traditional Chinese; the guide below explains each feature.
 
-A welcoming starting point with feature shortcuts and wellness quotes.
+### 1. Explore the Homepage
 
-<!-- Add the Health+ homepage screenshot here -->
+1. Browse the feature cards to open the calculator, quiz, lifestyle calendar, nearby activity finder, or mailbox.
+2. Use the menu button in the upper-left corner to switch between tools.
+3. To sign in with Google, select the login button and choose your account. Use the sidebar's sign-out option when finished. Signing in does not synchronize calendar records.
 
-### BMI & TDEE Calculator
+![Health+ homepage](images/homepage1.png)
+![Health+ homepage](images/homepage2.png)
 
-Body measurements and activity inputs lead to calculated estimates and tailored feedback.
+### 2. Calculate Your BMI and TDEE
 
-<!-- Add the BMI & TDEE calculator screenshot here -->
+1. Open the calculator and select **BMI** or **TDEE**.
+2. Enter your height in centimeters and weight in kilograms. For TDEE, also enter your age and select your sex and activity level.
+3. Select the calculate button to view your estimate and accompanying feedback. TDEE results also display your estimated BMR.
+4. Use the recalculate button to clear the form and try new inputs.
 
-### Health Quiz
+![BMI calculator](images/BMI-calculator.png)
+![TDEE calculator](images/TDEE-calculator.png)
 
-Eight questions guide users through a reflection on their recent habits and well-being.
+### 3. Take the Health Quiz
 
-<!-- Add the health quiz screenshot here -->
+1. Open the health quiz and select the start button.
+2. Choose the answer that best describes your recent habits for each of the eight questions. Selecting an answer automatically advances the quiz; use the previous-question button to revisit an answer.
+3. After the final question, review your score, result summary, and lifestyle suggestions. Select the restart button to take the quiz again.
 
-### Mood and Lifestyle Calendar
+![Health Quiz](images/health-quiz.png)
 
-Daily mood, hydration, and exercise selections appear alongside a monthly mood summary.
+### 4. Track Your Mood and Habits
 
-<!-- Add the mood and lifestyle calendar screenshot here -->
+1. Open the lifestyle calendar and use the arrows to choose a month.
+2. Select a date, then choose a mood, water-intake category, or exercise level. You can fill in any combination of these fields.
+3. Select the save button to record your choices. To estimate a daily water-intake range, open the water calculator and enter your weight.
+4. Select the monthly statistics button to view your mood distribution and accompanying reflections, then return to the calendar to continue recording.
 
-### Nearby Activity Finder
+Records stay in the current browser and are not synchronized across devices.
 
-A location-based map and place cards help users explore nearby activity spaces.
+![Mood and lifestyle calendar](images/calendar1.png)
+![Mood and lifestyle calendar](images/calendar2.png)
 
-<!-- Add the nearby activity finder screenshot here -->
+### 5. Find Nearby Activity Spaces
 
-### AI Support Mailbox
+1. Open the nearby activity finder and select the search button.
+2. Allow location access when your browser asks. If access is denied, enable location permission for the site and try again.
+3. Explore the map and cards for nearby gyms, sports centers, stadiums, and parks. Cards include approximate distance and available place details.
+4. Select a place card to open its listing in Google Maps.
 
-Users can write about their day and receive a supportive reply.
+![Nearby Activity Finder](images/map.png)
 
-<!-- Add the AI support mailbox screenshot here -->
+### 6. Write to the AI Support Mailbox
+
+1. Open the mailbox and write what you would like to share in the text box.
+2. Select the send button and wait for the reply to appear. Your message is sent to an external service for processing.
+3. Read the reply, then select the write-another-letter button to start a new message.
+
+The mailbox offers supportive interaction only and does not replace professional mental-health advice.
+
+![AI Support Mailbox](images/AI-mailbox.png)
 
 ## Key Features
 
@@ -183,22 +207,6 @@ No build step is required. For Google sign-in and maps, the local hostname may n
 - Review the Worker and add or strengthen server-side input validation, request-size limits, and rate limiting as needed.
 - Separate HTML, CSS, and JavaScript into maintainable modules.
 - Add automated tests and improve keyboard navigation, form labeling, and accessibility.
-
-## My Contributions
-
-### Ariel Lynn Lee
-
-The website's team section credits Ariel Lynn Lee with interface and interaction work. The following contribution outline is a draft for individual confirmation before portfolio publication.
-
-<!-- Confirm and edit individual contributions before publishing -->
-
-- Participated in requirement analysis and feature planning for the wellness tools.
-- Designed user interfaces and interactions to support a consistent experience across feature sections.
-- Implemented BMI and TDEE calculations, input checks, and result feedback.
-- Developed the eight-question health quiz, navigation, scoring, and result presentation.
-- Wrote user-facing content, feature explanations, and wellness suggestions.
-- Assisted with debugging and API integration across the application's features.
-- Collaborated through Git to coordinate and integrate project changes.
 
 ## Team
 
